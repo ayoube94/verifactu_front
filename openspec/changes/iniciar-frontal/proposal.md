@@ -55,6 +55,6 @@ Ninguna bloqueante. Se usa el `openapi.json` publicado en el último build de `m
 - **Repositorio:** todo el código inicial del frontal, `Dockerfile`, `Caddyfile`, `.github/workflows/ci.yml`, `contrato/openapi.json`, `PRODUCT.md` y la configuración de impeccable en `.claude/` y `.impeccable/`.
 - **Dependencias nuevas:**
   - de ejecución: React, React Router, TanStack Query y openapi-fetch;
-  - de desarrollo: Vite, TypeScript, ESLint, Vitest, Testing Library, MSW, openapi-typescript e impeccable.
+  - de desarrollo: Vite, TypeScript, oxlint, Vitest, Testing Library, MSW, openapi-typescript e impeccable.
 - **Backend:** sin cambios. Cuando se despliegue en la fase 4, la imagen sustituirá a `deploy/web-placeholder`.
 - **Coste AWS:** 0 USD adicionales. No se crea infraestructura.

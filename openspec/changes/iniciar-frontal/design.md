@@ -36,9 +36,9 @@
 
 ## Decisions
 
-### D1. Vite + React + TypeScript estricto, Node LTS fijado
+### D1. Vite + React + TypeScript estricto, Node LTS fijado, oxlint
 
-- **Herramientas:** Vite con plantilla `react-ts` y `strict: true`.
+- **Herramientas:** Vite con plantilla `react-ts` y `strict: true`. El lint es oxlint, el que trae la plantilla, con los plugins `react` (hooks) y `jsx-a11y`: cubre las mismas reglas que ESLint con menos dependencias.
 - **Node:** se fija la versión LTS en `.nvmrc` y en `engines` (Node 24, el que hay instalado). npm con `package-lock.json`.
 - **Por qué Vite:** el backend ya prevé su servidor de desarrollo (`localhost:5173`).
 - **Alternativas descartadas:**
@@ -50,6 +50,8 @@
 - `contrato/openapi.json` es una **copia versionada** del artefacto del backend.
 - `npm run api:sync` la actualiza con `gh run download` desde el último build correcto de `main` del backend. Usa las credenciales `gh` del desarrollador.
 - `npm run api:types` genera `src/api/schema.d.ts` con `openapi-typescript`. El fichero generado también se versiona.
+  - `openapi-typescript` exige TypeScript 5 como dependencia par y el proyecto usa TypeScript 7 (el de la plantilla de Vite). Por eso el generador vive aislado en `tools/openapi/`, con su propio `package.json` y lockfile (TypeScript 5.9.3), y se instala con `npm run api:tools`.
+  - `.gitattributes` fuerza finales de línea LF para que la comprobación de deriva dé lo mismo en Windows y en el CI (Linux).
 - **El CI regenera los tipos y falla si hay diferencias** con lo versionado (deriva).
 - **Por qué:** el CI no necesita un token del repo privado del backend, cada build es reproducible y cada actualización del contrato aparece como un diff revisable en un PR.
 - **Alternativas descartadas:**
