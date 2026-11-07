@@ -1,0 +1,17 @@
+.pagina {
+  display: grid;
+  gap: var(--espacio-4);
+  max-width: 70ch;
+}
+
+.titulo {
+  font-size: var(--texto-titulo);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.015em;
+  color: var(--color-tinta);
+  margin-bottom: var(--espacio-2);
+}
+
+.entrada {
+  color: var(--color-texto-sec);
+}

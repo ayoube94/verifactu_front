@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T21:20:00+01:00",
+  "title": "Design System: Zefact",
+  "extensions": {
+    "colorMeta": {
+      "verde-botella": { "role": "neutral", "displayName": "Verde botella de tapas", "tonalRamp": ["#0d1b17", "#16302a", "#1e3b32", "#2f5548", "#4a7363", "#7a9d8e", "#b3cabf", "#e3ece7"] },
+      "papel": { "role": "neutral", "displayName": "Papel de libro registro", "tonalRamp": ["#2b2d27", "#55584f", "#80837a", "#a9aca2", "#c9cbc2", "#e1e3da", "#eef0e8", "#f5f6f0"] },
+      "tinta-indigo": { "role": "primary", "displayName": "Tinta índigo de pluma", "tonalRamp": ["#0f1633", "#1a2654", "#24346e", "#3a4c8c", "#5d6ea8", "#8b98c4", "#bcc4df", "#e6e9f4"] },
+      "pauta-fuerte": { "role": "neutral", "displayName": "Pauta verde", "tonalRamp": ["#2a3a30", "#43594b", "#5f7b68", "#7a9a84", "#8fae9a", "#adc4b4", "#c9d6cc", "#e6ede8"] },
+      "ok": { "role": "neutral", "displayName": "Aceptada", "tonalRamp": ["#0b2a1a", "#134a2f", "#1f6b45", "#2f8a5c", "#5aa87f", "#8fc6a8", "#c3e1cf", "#e3f0e8"] },
+      "error": { "role": "neutral", "displayName": "Rechazo", "tonalRamp": ["#3d0b07", "#6e150d", "#b42318", "#d1453a", "#e27a71", "#eea9a3", "#f6d3cf", "#fbe9e7"] }
+    },
+    "typographyMeta": {
+      "titular": { "displayName": "Titular", "purpose": "Serie-número de una factura y título del inicio." },
+      "titulo": { "displayName": "Título", "purpose": "Títulos de pantalla." },
+      "destacado": { "displayName": "Destacado", "purpose": "Estado ante la AEAT, total, estado del servicio." },
+      "cuerpo": { "displayName": "Cuerpo", "purpose": "Casi todo el texto; cifras tabulares." },
+      "etiqueta": { "displayName": "Etiqueta", "purpose": "Navegación y subtítulos de sección." },
+      "datos": { "displayName": "Datos", "purpose": "Huellas, CSV e identificadores." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "duracion", "value": "180ms", "purpose": "Cambios de color de estado en enlaces y botones." },
+      { "name": "curva", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Salida exponencial para transiciones de estado." }
+    ],
+    "breakpoints": [
+      { "name": "margenes", "value": "48rem" },
+      { "name": "lateral", "value": "60rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-principal",
+      "description": "La acción principal de la pantalla, una por pantalla.",
+      "html": "<button class=\"ds-btn-principal\">Emitir factura</button>",
+      "css": ".ds-btn-principal { background: #24346e; color: #fff; border: 1px solid #24346e; border-radius: 6px; padding: 8px 16px; min-height: 40px; font: 600 1rem/1.25 system-ui, sans-serif; cursor: pointer; transition: background-color 180ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-principal:hover { background: #1a2654; } .ds-btn-principal:focus-visible { outline: 2px solid #24346e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button-secundario",
+      "description": "Acciones secundarias: reintentar, descargar, comprobar.",
+      "html": "<button class=\"ds-btn-secundario\">Comprobar de nuevo</button>",
+      "css": ".ds-btn-secundario { background: transparent; color: #24346e; border: 1px solid #24346e; border-radius: 6px; padding: 8px 16px; min-height: 40px; font: 600 1rem/1.25 system-ui, sans-serif; cursor: pointer; } .ds-btn-secundario:hover { background: #eaefe6; } .ds-btn-secundario:focus-visible { outline: 2px solid #24346e; outline-offset: 2px; }"
+    },
+    {
+      "name": "Cabecera con navegación",
+      "kind": "nav",
+      "refersTo": "cabecera",
+      "description": "Tapas verde botella con marca, navegación y estado del servicio.",
+      "html": "<header class=\"ds-cab\"><strong>Zefact</strong><nav><a href=\"#\" aria-current=\"page\">Inicio</a><a href=\"#\">Emitir factura</a></nav><span class=\"ds-cab-salud\">Servicio <b>operativo</b></span></header>",
+      "css": ".ds-cab { display: flex; align-items: center; gap: 48px; min-height: 64px; padding: 0 32px; background: #1e3b32; color: #eaf1ec; font: 400 0.9375rem/1.5 system-ui, sans-serif; } .ds-cab strong { font-size: 1.25rem; } .ds-cab nav { display: flex; gap: 32px; } .ds-cab a { color: #c8d8ce; text-decoration: none; padding: 16px 0 13px; border-bottom: 3px solid transparent; } .ds-cab a[aria-current=page] { color: #eaf1ec; border-bottom-color: #eaf1ec; } .ds-cab a:focus-visible { outline: 2px solid #eaf1ec; outline-offset: 2px; } .ds-cab-salud { margin-left: auto; color: #c8d8ce; } .ds-cab-salud b { color: #eaf1ec; }"
+    },
+    {
+      "name": "Aviso de error",
+      "kind": "custom",
+      "refersTo": "aviso-error",
+      "description": "Error de la API explicado, con su acción de recuperación.",
+      "html": "<div class=\"ds-aviso\" role=\"alert\"><p class=\"ds-aviso-t\">Error del servidor</p><p>Si se repite, comunica este identificador: <code>3f6c2a1e</code></p></div>",
+      "css": ".ds-aviso { display: grid; gap: 8px; padding: 16px 24px; background: #fbe9e7; border-top: 1px solid #b42318; border-bottom: 1px solid #b42318; color: #1b2420; font: 400 1rem/1.5 system-ui, sans-serif; } .ds-aviso p { margin: 0; } .ds-aviso-t { font-weight: 700; color: #b42318; } .ds-aviso code { font-family: ui-monospace, Consolas, monospace; }"
+    },
+    {
+      "name": "Lista pautada",
+      "kind": "custom",
+      "description": "Asientos del libro: filete fuerte arriba y pauta fina entre filas.",
+      "html": "<ul class=\"ds-pauta\"><li><b>Emitir factura</b><span>Registrar y remitir a la AEAT.</span></li><li><b>Consultar factura</b><span>Estado, QR y XML.</span></li></ul>",
+      "css": ".ds-pauta { list-style: none; margin: 0; padding: 0; border-top: 1px solid #8fae9a; font: 400 1rem/1.5 system-ui, sans-serif; color: #1b2420; } .ds-pauta li { display: grid; grid-template-columns: 12rem 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid #c9d6cc; } .ds-pauta span { color: #55615a; }"
+    },
+    {
+      "name": "Suma y sigue",
+      "kind": "custom",
+      "description": "Gesto propio: la huella anterior arrastrada antes de la huella del registro.",
+      "html": "<div class=\"ds-sys\"><div class=\"ds-sys-a\"><small>Suma y sigue · huella anterior</small><code>4F1C 9A0E 77B2 D3C1 …</code></div><div class=\"ds-sys-p\"><small>Huella de este registro</small><code>B826 DF16 3A9C 0E45 …</code></div></div>",
+      "css": ".ds-sys { font: 400 1rem/1.5 system-ui, sans-serif; } .ds-sys small { display: block; font-size: 0.8125rem; color: #55615a; } .ds-sys code { font-family: ui-monospace, Consolas, monospace; font-size: 0.875rem; word-break: break-all; } .ds-sys-a { padding: 14px 16px; background: #eaefe6; border-top: 1px solid #8fae9a; } .ds-sys-p { padding: 14px 16px; border-bottom: 2px solid #24346e; } .ds-sys-p small { color: #24346e; font-weight: 600; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Libro Registro",
+    "overview": "Zefact se dibuja como el libro registro de facturas expedidas que cualquier administrativo español ha tenido delante: papel claro y pautado, tapas verde botella y la tinta índigo de la pluma. Cada factura es un asiento numerado, y la huella de cada registro arrastra la del anterior, igual que el «suma y sigue» al pie de cada folio. El mundo no decora: da paleta, tipografía, densidad y un gesto propio. La estructura y los controles son los estándar de una aplicación web.\n\nEs una herramienta de trabajo (modo Operate): el operador debe saber dónde está todo antes de fijarse en el estilo. La confianza sale de la precisión: cifras alineadas, filetes finos y estados que siempre dicen con palabras lo que pasa.",
+    "keyCharacteristics": [
+      "Cabecera verde botella fija sobre un fondo papel.",
+      "Un único color reservado, la tinta índigo, para la acción principal, lo activo y los titulares de registro.",
+      "Filetes de pauta en lugar de tarjetas y sombras.",
+      "Cifras tabulares en todo el texto; monoespaciada solo para datos (huellas, CSV, identificadores).",
+      "El «suma y sigue» como gesto propio: la huella anterior arrastrada antes de la huella del registro."
+    ],
+    "rules": [
+      { "name": "The Reserved Ink Rule", "body": "La tinta índigo marca lo que se puede hacer o lo que está activo. Si algo es índigo y no es accionable ni un titular de registro, sobra.", "section": "colors" },
+      { "name": "The Words First Rule", "body": "Ningún estado se comunica solo con color: «Aceptada por la AEAT», «No disponible». El color refuerza.", "section": "colors" },
+      { "name": "The One Size Rule", "body": "Una talla, la de cuerpo, hace casi todo el trabajo. La jerarquía va por peso y posición, no por multiplicar tamaños.", "section": "typography" },
+      { "name": "The Fixed Columns Rule", "body": "En tablas y listas, las columnas no se mueven al cambiar un estado: el estado restila la fila.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** reservar la tinta índigo para la acción principal y lo activo.",
+      "**Do** escribir cada estado con palabras, en español claro.",
+      "**Do** separar con filetes de pauta y alinear las cifras en columnas tabulares.",
+      "**Do** aislar con espacio vacío las acciones irreversibles (anular, en fases futuras).",
+      "**Do** mostrar el `errorId` cuando el backend lo dé."
+    ],
+    "donts": [
+      "**Don't** usar tarjetas, sombras ni tarjetas dentro de tarjetas.",
+      "**Don't** usar etiquetas tipo píldora de color como único indicador de estado.",
+      "**Don't** usar monoespaciada como disfraz técnico: solo para datos.",
+      "**Don't** cargar fuentes, iconos ni imágenes de otros orígenes.",
+      "**Don't** dibujar la pauta del libro literalmente (papel rayado de fondo): solo filetes y cifras alineadas.",
+      "**Don't** poner un rótulo pequeño encima de un título."
+    ]
+  }
+}
