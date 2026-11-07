@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Estándar de la categoría</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#111827;background:#F3F4F6;display:grid;grid-template-columns:240px 1fr;font-variant-numeric:tabular-nums}
+aside{background:#fff;border-right:1px solid #E5E7EB;padding:24px 16px}
+.marca{font-weight:700;font-size:18px;color:#2563EB;padding:0 12px 24px}
+aside a{display:block;padding:9px 12px;border-radius:6px;color:#374151;text-decoration:none}
+aside a.act{background:#EFF6FF;color:#1D4ED8;font-weight:600}
+.top{height:60px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.top span{font-size:13px;color:#047857;background:#ECFDF5;padding:4px 10px;border-radius:999px}
+.wrap{padding:32px}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:28px}
+.head{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:24px}
+.tag{background:#DCFCE7;color:#166534;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:24px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;color:#6B7280;padding:10px 0;border-bottom:1px solid #E5E7EB}
+td{padding:12px 0;border-bottom:1px solid #F3F4F6}
+.n{text-align:right}
+.box{background:#F9FAFB;border-radius:8px;padding:16px;font-size:13px;color:#4B5563}
+.box code{display:block;word-break:break-all;color:#111827;margin:4px 0 12px}
+.btn{font:inherit;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid #D1D5DB;background:#fff;margin-right:8px}
+.btn.p{background:#2563EB;color:#fff;border-color:#2563EB}
+.tot{text-align:right;font-size:20px;font-weight:700;margin-top:16px}
+</style></head>
+<body>
+<aside><div class="marca">Zefact</div><a href="#">Inicio</a><a href="#">Emitir factura</a><a class="act" href="#">Consultar</a><a href="#">Verificar huella</a></aside>
+<div>
+  <div class="top"><b>Factura 2026-001</b><span>Servicio operativo</span></div>
+  <div class="wrap"><div class="card">
+    <div class="head"><h1>2026-001 · EMPRESA CLIENTE S.A.</h1><span class="tag">Aceptada</span></div>
+    <div class="grid">
+      <div>
+        <table>
+          <thead><tr><th>Descripción</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">IVA</th><th class="n">Base</th></tr></thead>
+          <tbody>
+            <tr><td>Auditoría de Sistemas VeriFactu</td><td class="n">1</td><td class="n">1.000,00 €</td><td class="n">21 %</td><td class="n">1.000,00 €</td></tr>
+            <tr><td>Soporte de integración (horas)</td><td class="n">6</td><td class="n">75,00 €</td><td class="n">21 %</td><td class="n">450,00 €</td></tr>
+          </tbody>
+        </table>
+        <div class="tot">Total 1.754,50 €</div>
+      </div>
+      <div class="box">CSV<code>A1B2C3D4E5F6G7H8</code>Huella anterior<code>4F1C9A0E77B2D3C108AA5E6F…</code>Huella<code>B826DF163A9C0E4571D288F0…</code>
+        <button class="btn p">Verificar</button><button class="btn">XML</button></div>
+    </div>
+  </div></div>
+</div>
+</body></html>

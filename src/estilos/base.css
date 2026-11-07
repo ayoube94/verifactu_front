@@ -1,0 +1,97 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+html {
+  scrollbar-color: var(--color-pauta-fuerte) var(--color-fondo);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--fuente);
+  font-size: var(--texto-base);
+  line-height: var(--interlineado);
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  line-height: var(--interlineado-titulo);
+  text-wrap: balance;
+}
+
+p {
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-tinta);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code,
+kbd,
+samp {
+  font-family: var(--fuente-datos);
+  font-size: 0.9375em;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--color-tinta);
+  color: var(--color-tinta-texto);
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+input,
+textarea {
+  caret-color: var(--color-tinta);
+}
