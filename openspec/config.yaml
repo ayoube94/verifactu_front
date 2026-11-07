@@ -1,0 +1,56 @@
+schema: spec-driven
+
+context: |
+  Language: es
+  All artifacts must be written in es.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Proyecto: frontal web (SPA) de una plataforma SaaS de facturación que
+  implementa VeriFactu (RD 1007/2023, Orden HAC/1177/2024). El backend vive
+  en otro repositorio (github.com/ayoube94/verifactu_web, Spring Boot) y es
+  la única fuente de verdad: el frontal no calcula nada con valor legal
+  (huella, QR, importes definitivos), solo lo muestra.
+
+  Stack: React + TypeScript, Vite, React Router, cliente HTTP tipado
+  generado desde el `openapi.json` del backend (openapi-typescript +
+  openapi-fetch), Vitest + Testing Library + MSW para tests. Node LTS.
+  Diseño guiado con el skill impeccable (PRODUCT.md, DESIGN.md,
+  `npx impeccable detect`). Sin librería de componentes pesada: CSS propio
+  con tokens (custom properties).
+
+  Contrato con el backend (docs/operacion/frontal.md del backend), de
+  obligado cumplimiento:
+  - Imagen `ghcr.io/<owner>/verifactu-web:<sha>` (también `latest`),
+    linux/amd64, servidor Caddy escuchando en el puerto 8080, sin root.
+  - Fallback de SPA: cualquier ruta que no sea fichero devuelve index.html.
+  - Llamadas a la API siempre con rutas relativas `/api/v1/...`; sin URL de
+    API por entorno. En local, el servidor de Vite hace de proxy de `/api`.
+  - Ninguna clave de API ni credencial en el código ni en el `dist/`: la
+    clave `X-API-Key` la añade el Caddy del borde y el acceso al sitio es
+    HTTP Basic en el borde hasta que llegue el login multi-cliente.
+  - Despliegue independiente del backend en la instancia Lightsail
+    (eu-south-2) con `docker compose ... up -d web` y vuelta atrás a
+    `/opt/verifactu/.last-good-tag-web`.
+
+  Restricciones permanentes:
+  - Interfaz en español (es-ES): importes con coma decimal y símbolo €,
+    fechas dd/mm/aaaa.
+  - Simple y operativo: priorizar pocas pantallas que funcionen bien sobre
+    funcionalidades a medias. Accesible (WCAG 2.2 AA) y usable en móvil.
+  - Sin almacenamiento de datos de facturación en el navegador más allá de
+    la sesión (nada de facturas en localStorage).
+  - Sin servicios de terceros en tiempo de ejecución (analítica, CDNs,
+    fuentes remotas): todo se sirve desde la propia imagen.
+  - Presupuesto AWS de la plataforma <= 10 USD/mes: el frontal no añade
+    infraestructura propia (ni S3/CloudFront ni Amplify).
+  - Un cambio incompatible en la API se coordina con el repo del backend;
+    la versión va en la ruta (`/api/v1`).
+
+rules:
+  proposal:
+    - Indicar explícitamente qué queda fuera de alcance
+    - Indicar si el change depende de un cambio en el backend
+  design:
+    - Incluir impacto en coste mensual de AWS cuando la decisión afecte a infraestructura
+  tasks:
+    - Tareas de como máximo ~2 horas, verificables
