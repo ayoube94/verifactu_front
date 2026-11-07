@@ -1,0 +1,9 @@
+{
+  "name": "verifactu-frontal-openapi-tools",
+  "private": true,
+  "description": "Generador de tipos del contrato. Aislado porque openapi-typescript necesita TypeScript 5 y el proyecto usa TypeScript 7.",
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}
