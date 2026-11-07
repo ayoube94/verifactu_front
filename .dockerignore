@@ -1,0 +1,23 @@
+# Solo entra en la imagen lo necesario para compilar el frontal
+.git
+.github
+.claude
+.impeccable
+.vscode
+node_modules
+dist
+coverage
+tools
+openspec
+notes
+contrato
+scripts/sync-openapi.mjs
+scripts/api-types.mjs
+scripts/comprobar-imagen.sh
+*.md
+*.log
+.env
+.env.*
+*.local
+Dockerfile
+.dockerignore

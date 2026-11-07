@@ -1,0 +1,28 @@
+# Servidor interno del frontal (contrato docs/operacion/frontal.md del backend).
+# Solo HTTP en :8080 dentro de la red de Compose; HTTPS, HTTP Basic y cabeceras de seguridad generales
+# los pone el Caddy del borde. Aquí: fallback de SPA, caché y CSP.
+{
+	admin off
+	persist_config off
+}
+
+:8080 {
+	root * /srv
+
+	header {
+		# Solo recursos del propio origen; el QR llega de la API como imagen data:
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+		-Server
+	}
+
+	# Fallback de SPA: cualquier ruta que no sea un fichero devuelve index.html (p. ej. /facturas/42)
+	try_files {path} /index.html
+
+	# Tras el fallback: los recursos con huella en el nombre son inmutables; todo lo demás (index.html) se revalida
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	@resto not path /assets/*
+	header @resto Cache-Control "no-cache"
+
+	file_server
+}
