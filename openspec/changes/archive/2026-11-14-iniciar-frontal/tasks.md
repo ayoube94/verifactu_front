@@ -65,7 +65,7 @@
 
 ## 6. Integración continua
 
-- [ ] 6.1 Crear `.github/workflows/ci.yml` (en `pull_request` y `push` a `main`):
+- [x] 6.1 Crear `.github/workflows/ci.yml` (en `pull_request` y `push` a `main`):
   - `npm ci`, `lint`, `typecheck`, `test`, `build`;
   - `api:check`;
   - `openspec validate --all --strict` (CLI 1.16.0);
