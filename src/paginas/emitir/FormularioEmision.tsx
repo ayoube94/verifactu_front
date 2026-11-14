@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { useFieldArray, useForm, useWatch, type FieldPath } from 'react-hook-form'
 import { ErrorApi } from '../../api/problemas.ts'
 import { Boton } from '../../componentes/Boton.tsx'
@@ -98,16 +98,36 @@ export function FormularioEmision({ onEnviar, enviando = false, errorServidor = 
     return () => window.removeEventListener('beforeunload', avisar)
   }, [enviando])
 
-  const enviar = handleSubmit((valores) => {
-    if (enviando) return
-    onEnviar(esquemaFormulario.parse(valores))
-  })
+  // Guarda síncrona: dos clics seguidos llegan antes de que React repinte el botón deshabilitado.
+  // Se libera cuando la mutación termina (enviando vuelve a false).
+  const envioEnCurso = useRef(false)
+  useEffect(() => {
+    if (!enviando) envioEnCurso.current = false
+  }, [enviando])
+
 
   const errorCabecera = (campo: 'serie' | 'numero' | 'fechaExpedicion' | 'descripcionOperacion') => errors[campo]?.message
   const id = (nombre: string) => `${prefijo}-${nombre}`
 
   return (
-    <form className={estilos.formulario} onSubmit={enviar} noValidate aria-labelledby={`${prefijo}-titulo`}>
+    <form
+      className={estilos.formulario}
+      onSubmit={(evento) => {
+        evento.preventDefault()
+        if (envioEnCurso.current || enviando) return
+        envioEnCurso.current = true
+        // Valida y, si es válido, envía. Si la validación falla, libera la guarda para poder corregir y reenviar.
+        const validarYEnviar = handleSubmit(
+          (valores) => onEnviar(esquemaFormulario.parse(valores)),
+          () => {
+            envioEnCurso.current = false
+          },
+        )
+        void validarYEnviar(evento)
+      }}
+      noValidate
+      aria-labelledby={`${prefijo}-titulo`}
+    >
       <section className={estilos.bloque} aria-labelledby={`${prefijo}-cabecera`}>
         <h2 id={`${prefijo}-cabecera`} className={estilos.subtitulo}>
           Factura

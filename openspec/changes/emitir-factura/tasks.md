@@ -50,8 +50,8 @@
 
 ## 6. E2E con Playwright
 
-- [ ] 6.1 Instalar `@playwright/test` (solo Chromium), configurar `playwright.config.ts` contra `vite preview`, añadir el script `test:e2e` y crear el helper de rutas simuladas tipado con `schema.d.ts`. Se verifica con `npm run test:e2e` y un test de humo que abre `/facturas/nueva`
-- [ ] 6.2 Escribir los escenarios E2E: emisión aceptada, 400 en una línea, 201 rechazado y doble clic con una sola petición. Se verifica con `npm run test:e2e` en verde
+- [x] 6.1 Instalar `@playwright/test` (solo Chromium), configurar `playwright.config.ts` contra `vite preview`, añadir el script `test:e2e` y crear el helper de rutas simuladas tipado con `schema.d.ts`. Se verifica con `npm run test:e2e` y un test de humo que abre `/facturas/nueva`
+- [x] 6.2 Escribir los escenarios E2E: emisión aceptada, 400 en una línea, 201 rechazado y doble clic con una sola petición. Se verifica con `npm run test:e2e` en verde
 - [ ] 6.3 Añadir al job `build` del CI la instalación de Chromium (cacheada) y `npm run test:e2e`, y ajustar `.gitignore` para los informes. Se verifica con el CI del PR en verde
 
 ## 7. Verificación integral

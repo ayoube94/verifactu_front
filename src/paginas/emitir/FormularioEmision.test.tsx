@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, test, vi } from 'vitest'
@@ -137,6 +137,33 @@ describe('validación al enviar (3.6)', () => {
     await usuario.type(screen.getByLabelText('Descripción, línea 1'), 'Venta')
     await usuario.type(screen.getByLabelText('Precio unitario (€)'), '10')
 
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+    expect(onEnviar).toHaveBeenCalledOnce()
+  })
+})
+
+describe('guarda contra el doble envío', () => {
+  test('dos envíos seguidos antes de repintar llaman a onEnviar una sola vez', async () => {
+    const onEnviar = sinEnvio()
+    const usuario = userEvent.setup()
+    render(<FormularioEmision onEnviar={onEnviar} />)
+    await rellenarValida(usuario)
+    const form = screen.getByRole('button', { name: 'Emitir' }).closest('form')!
+    fireEvent.submit(form)
+    fireEvent.submit(form)
+    await waitFor(() => expect(onEnviar).toHaveBeenCalledOnce())
+  })
+})
+
+describe('la guarda se libera si la validación falla', () => {
+  test('tras un envío inválido, corregir y volver a enviar sí llama a onEnviar', async () => {
+    const onEnviar = sinEnvio()
+    const usuario = userEvent.setup()
+    render(<FormularioEmision onEnviar={onEnviar} />)
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+    expect(onEnviar).not.toHaveBeenCalled()
+
+    await rellenarValida(usuario)
     await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
     expect(onEnviar).toHaveBeenCalledOnce()
   })
