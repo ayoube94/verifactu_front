@@ -65,9 +65,9 @@
 
 ## 8. Contrato completo del backend (depende de `contrato-api-openapi` implementado en el backend)
 
-- [ ] 8.1 `npm run api:sync && npm run api:types`. Sustituir los tipos manuales de `src/api/problemas.ts` (ProblemDetail y verificación de huella) por los generados, conservando `ErrorApi` y la normalización. Leer `facturaId` del 409. Se verifica con `npm run typecheck`, `npm test` y `npm run api:check`
-- [ ] 8.2 Implementar la recuperación (D7): tras un fallo sin respuesta, consultar `por-numero` (200 «ya se había emitido», 404 «Reintentar la emisión», sin respuesta «Comprobar de nuevo»). Se verifica con tests MSW de los tres casos y un escenario E2E
-- [ ] 8.3 Ante un 409 con `facturaId`, ofrecer «Ver la factura existente», que carga `GET /{id}` y muestra `<RegistroEmitido>`. Se verifica con un test MSW y un escenario E2E
+- [x] 8.1 `npm run api:sync && npm run api:types`. Sustituir los tipos manuales de `src/api/problemas.ts` (ProblemDetail y verificación de huella) por los generados, conservando `ErrorApi` y la normalización. Leer `facturaId` del 409. Se verifica con `npm run typecheck`, `npm test` y `npm run api:check`
+- [x] 8.2 Implementar la recuperación (D7): tras un fallo sin respuesta, consultar `por-numero` (200 «ya se había emitido», 404 «Reintentar la emisión», sin respuesta «Comprobar de nuevo»). Se verifica con tests MSW de los tres casos y un escenario E2E
+- [x] 8.3 Ante un 409 con `facturaId`, ofrecer «Ver la factura existente», que carga `GET /{id}` y muestra `<RegistroEmitido>`. Se verifica con un test MSW y un escenario E2E
 
 ## Workflow follow-up
 

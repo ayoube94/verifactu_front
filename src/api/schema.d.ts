@@ -13,6 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * Emitir una factura
+         * @description Crea la factura, la encadena con la anterior y la remite a la AEAT. Si la AEAT no responde o rechaza el registro, la factura se crea igualmente con estadoEnvio ERROR_CONEXION o RECHAZADO, así que el 201 no garantiza aceptación.
+         */
         post: operations["emitirFactura"];
         delete?: never;
         options?: never;
@@ -27,6 +31,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Consultar una factura por id */
         get: operations["obtenerFactura"];
         put?: never;
         post?: never;
@@ -43,7 +48,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Descargar el XML enviado a la AEAT */
         get: operations["descargarXmlAeat"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/facturas/por-numero": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consultar una factura por serie y número
+         * @description Devuelve lo mismo que GET /{id}. Útil si una emisión no obtuvo respuesta: se consulta antes de reintentar. Serie y número se comparan exactamente como se guardaron.
+         */
+        get: operations["obtenerFacturaPorNumero"];
         put?: never;
         post?: never;
         delete?: never;
@@ -59,6 +85,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Verificar la integridad de un registro por su huella */
         get: operations["verificarIntegridadHuella"];
         put?: never;
         post?: never;
@@ -87,9 +114,15 @@ export interface components {
             fechaExpedicion: string;
             /** Format: date */
             fechaOperacion?: string;
-            /** @enum {string} */
+            /**
+             * @description Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.
+             * @enum {string}
+             */
             tipoFactura: "F1" | "F2" | "F3" | "R1" | "R2" | "R3" | "R4" | "R5";
-            /** @enum {string} */
+            /**
+             * @description Régimen o clave de IVA. Código AEAT: 01 régimen general, 02 exportación, 03 bienes usados, 04 oro de inversión, 05 agencias de viajes, 06 grupo de entidades, 07 criterio de caja, 08 recargo de equivalencia.
+             * @enum {string}
+             */
             regimenIva?: "REGIMEN_GENERAL" | "EXPORTACION" | "BIENES_USADOS" | "ORO_INVERSION" | "AGENCIAS_VIAJES" | "GRUPO_ENTIDADES" | "CRITERIO_CAJA" | "SIMPLIFICADO";
             descripcionOperacion: string;
             cliente?: components["schemas"]["ClienteDto"];
@@ -101,7 +134,9 @@ export interface components {
             descripcion: string;
             cantidad: number;
             precioUnitario: number;
+            /** @description Importe a restar de la base de la línea, en euros. No es un porcentaje. */
             descuento?: number;
+            /** @description Tipo de IVA en porcentaje: 21.00, 10.00, 4.00 o 0.00. */
             tipoIva: number;
         };
         FacturaResponseDto: {
@@ -114,9 +149,15 @@ export interface components {
             fechaExpedicion?: string;
             /** Format: date */
             fechaOperacion?: string;
-            /** @enum {string} */
+            /**
+             * @description Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.
+             * @enum {string}
+             */
             tipoFactura?: "F1" | "F2" | "F3" | "R1" | "R2" | "R3" | "R4" | "R5";
-            /** @enum {string} */
+            /**
+             * @description Régimen o clave de IVA. Código AEAT: 01 régimen general, 02 exportación, 03 bienes usados, 04 oro de inversión, 05 agencias de viajes, 06 grupo de entidades, 07 criterio de caja, 08 recargo de equivalencia.
+             * @enum {string}
+             */
             regimenIva?: "REGIMEN_GENERAL" | "EXPORTACION" | "BIENES_USADOS" | "ORO_INVERSION" | "AGENCIAS_VIAJES" | "GRUPO_ENTIDADES" | "CRITERIO_CAJA" | "SIMPLIFICADO";
             descripcionOperacion?: string;
             baseImponibleTotal?: number;
@@ -134,13 +175,82 @@ export interface components {
             /** Format: date-time */
             fechaHoraGenRegistro?: string;
             cadenaCanonica?: string;
-            /** @enum {string} */
+            /**
+             * @description Estado del envío a la AEAT. Una emisión puede devolver 201 con RECHAZADO o ERROR_CONEXION: la factura queda creada pero no aceptada. Solo ACEPTADO y ACEPTADO_CON_ERRORES indican aceptación.
+             * @enum {string}
+             */
             estadoEnvio?: "PENDIENTE" | "ENVIADO" | "ACEPTADO" | "ACEPTADO_CON_ERRORES" | "RECHAZADO" | "ERROR_CONEXION";
             codigoRespuestaAeat?: string;
             mensajeAeat?: string;
             csvAeat?: string;
             qrUrl?: string;
             qrBase64?: string;
+        };
+        /** @description ProblemDetail 400: datos no válidos. 'errores' indica el campo y el motivo */
+        ProblemaValidacion: {
+            type?: string;
+            title?: string;
+            /** Format: int32 */
+            status?: number;
+            detail?: string;
+            timestamp?: string;
+            /** @description Mapa campo -> motivo, por ejemplo {"lineas[0].tipoIva": "El tipo de IVA es obligatorio"} */
+            errores?: {
+                [key: string]: string;
+            };
+        };
+        /** @description ProblemDetail 409: ya existe una factura con esa serie y número. Usar 'facturaId' para recuperarla con GET /{id} o GET /por-numero */
+        ProblemaFacturaDuplicada: {
+            type?: string;
+            title?: string;
+            /** Format: int32 */
+            status?: number;
+            detail?: string;
+            timestamp?: string;
+            /**
+             * Format: int64
+             * @description Identificador numérico de la factura existente
+             */
+            facturaId?: number;
+        };
+        /** @description ProblemDetail 500: error interno. Sin detalle técnico; 'errorId' permite localizar la traza en el log */
+        ProblemaErrorInterno: {
+            type?: string;
+            title?: string;
+            /** Format: int32 */
+            status?: number;
+            detail?: string;
+            timestamp?: string;
+            /** @description Identificador del error para buscarlo en el log del servidor */
+            errorId?: string;
+        };
+        ProblemDetail: {
+            /** Format: uri */
+            type?: string;
+            title?: string;
+            /** Format: int32 */
+            status?: number;
+            detail?: string;
+            /** Format: uri */
+            instance?: string;
+            properties?: {
+                [key: string]: unknown;
+            };
+        };
+        /** @description Resultado de recomputar la huella de un registro a partir de su cadena canónica */
+        VerificacionHuellaDto: {
+            /** @description Huella SHA-256 del registro (64 caracteres hexadecimales) */
+            huella?: string;
+            /** @description Huella del registro anterior de la cadena; vacía en el primer registro */
+            huellaAnterior?: string;
+            /** @description Fecha-hora de generación del registro, en ISO-8601 con offset */
+            fechaGeneracion?: string;
+            /** @description Cadena canónica sobre la que se calculó la huella */
+            cadenaCanonica?: string;
+            /** @description true si la huella recomputada coincide con la guardada */
+            integridadValida?: boolean;
+            /** @description Mensaje legible del resultado */
+            mensaje?: string;
         };
     };
     responses: never;
@@ -164,13 +274,51 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
-            200: {
+            /** @description Factura creada. Puede tener estadoEnvio RECHAZADO o ERROR_CONEXION. */
+            201: {
                 headers: {
+                    /** @description URL de la factura creada (GET /api/v1/facturas/{id}) */
+                    Location?: string;
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["FacturaResponseDto"];
+                };
+            };
+            /** @description Datos no válidos. 'errores' indica cada campo. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemaValidacion"];
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+            /** @description Ya existe una factura con esa serie y número. 'facturaId' indica cuál. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemaFacturaDuplicada"];
+                };
+            };
+            /** @description Error interno. 'errorId' permite localizarlo en el log. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemaErrorInterno"];
                 };
             };
         };
@@ -180,19 +328,38 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Identificador numérico de la factura */
                 id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Factura encontrada */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["FacturaResponseDto"];
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+            /** @description No existe ninguna factura con ese id */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
         };
@@ -202,19 +369,90 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Identificador numérico de la factura */
                 id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description XML del registro enviado */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/xml": string;
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+            /** @description No existe ninguna factura con ese id */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    obtenerFacturaPorNumero: {
+        parameters: {
+            query: {
+                /** @description Serie de la factura, exactamente como se emitió */
+                serie: string;
+                /** @description Número de la factura, exactamente como se emitió */
+                numero: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Factura encontrada */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FacturaResponseDto"];
+                };
+            };
+            /** @description Falta la serie o el número */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+            /** @description No existe ninguna factura con esa serie y número */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
         };
@@ -224,21 +462,38 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Huella SHA-256 (64 caracteres hexadecimales) */
                 huella: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Resultado de la verificación */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["VerificacionHuellaDto"];
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+            /** @description No existe ningún registro con esa huella */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
         };

@@ -88,4 +88,32 @@ test.describe('emisión de factura', () => {
     await expect(page.getByText('Aceptada por la AEAT')).toBeVisible()
     expect(recibidas).toHaveLength(1)
   })
+  test('409 con facturaId: abre la factura existente desde la pantalla', async ({ page }) => {
+    await simularApi(page, (_peticion, ruta) =>
+      ruta.fulfill({ status: 409, json: { status: 409, detail: 'Ya existe una factura registrada con la serie 2026 y número 001', facturaId: 42 } }),
+    )
+    await page.route('**/api/v1/facturas/42', (ruta) => ruta.fulfill({ json: facturaEmitida('ACEPTADO') }))
+    await page.goto('/facturas/nueva')
+    await rellenarFactura(page)
+    await page.getByRole('button', { name: 'Emitir' }).click()
+
+    await page.getByRole('button', { name: 'Ver la factura existente' }).click()
+    await expect(page.getByText('Aceptada por la AEAT')).toBeVisible()
+  })
+
+  test('sin respuesta y por-numero da 404: reintentar con los mismos datos emite la factura', async ({ page }) => {
+    let intento = 0
+    await simularApi(page, (_peticion, ruta) => {
+      intento += 1
+      return intento === 1 ? ruta.abort('failed') : ruta.fulfill({ status: 201, json: facturaEmitida('ACEPTADO') })
+    })
+    await page.route('**/api/v1/facturas/por-numero**', (ruta) => ruta.fulfill({ status: 404, json: { status: 404, detail: 'No existe' } }))
+    await page.goto('/facturas/nueva')
+    await rellenarFactura(page)
+    await page.getByRole('button', { name: 'Emitir' }).click()
+
+    await page.getByRole('button', { name: 'Reintentar la emisión' }).click()
+    await expect(page.getByText('Aceptada por la AEAT')).toBeVisible()
+  })
+
 })
