@@ -19,12 +19,12 @@
 
 ## 3. Formulario
 
-- [ ] 3.1 Si no se ha hecho ya, `/impeccable shape` de la pantalla de emisión dentro de `DESIGN.md`, y anotar la composición en el surface brief. Se verifica con el brief en `.impeccable/surfaces/`
-- [ ] 3.2 Crear los componentes de campo (`CampoTexto`, `CampoSelect`, con etiqueta visible, error asociado con `aria-describedby` y `aria-invalid`, y estados normal, foco, error y deshabilitado) siguiendo los tokens. Se verifica con tests de asociación etiqueta-campo y error, y con el detector de impeccable sin hallazgos
-- [ ] 3.3 Crear los bloques de cabecera (serie, número, fecha, tipo con códigos y descripciones, régimen y descripción de la operación) y de destinatario. Se verifica con un test de los valores iniciales del spec
-- [ ] 3.4 Crear la tabla de líneas con `useFieldArray`: añadir y quitar (la última no se quita), el descuento rotulado en euros, el selector de IVA (21, 10, 4 y 0 %), la base de cada línea y el bloque apilado a 360 px. Se verifica con tests de añadir y quitar conservando valores
-- [ ] 3.5 Crear el pie de totales orientativos, recalculado al editar y rotulado como «orientativo». Se verifica con un test del ejemplo del spec escribiendo en los campos
-- [ ] 3.6 Conectar la validación al enviar, con mensajes junto a cada campo y el foco en el primer error. Se verifica con el escenario «Envío con campos vacíos» (ninguna petición enviada)
+- [x] 3.1 Si no se ha hecho ya, `/impeccable shape` de la pantalla de emisión dentro de `DESIGN.md`, y anotar la composición en el surface brief. Se verifica con el brief en `.impeccable/surfaces/`
+- [x] 3.2 Crear los componentes de campo (`CampoTexto`, `CampoSelect`, con etiqueta visible, error asociado con `aria-describedby` y `aria-invalid`, y estados normal, foco, error y deshabilitado) siguiendo los tokens. Se verifica con tests de asociación etiqueta-campo y error, y con el detector de impeccable sin hallazgos
+- [x] 3.3 Crear los bloques de cabecera (serie, número, fecha, tipo con códigos y descripciones, régimen y descripción de la operación) y de destinatario. Se verifica con un test de los valores iniciales del spec
+- [x] 3.4 Crear la tabla de líneas con `useFieldArray`: añadir y quitar (la última no se quita), el descuento rotulado en euros, el selector de IVA (21, 10, 4 y 0 %), la base de cada línea y el bloque apilado a 360 px. Se verifica con tests de añadir y quitar conservando valores
+- [x] 3.5 Crear el pie de totales orientativos, recalculado al editar y rotulado como «orientativo». Se verifica con un test del ejemplo del spec escribiendo en los campos
+- [x] 3.6 Conectar la validación al enviar, con mensajes junto a cada campo y el foco en el primer error. Se verifica con el escenario «Envío con campos vacíos» (ninguna petición enviada)
 
 ## 4. Envío y errores del servidor
 

@@ -1,7 +1,8 @@
 import { useTituloPagina } from '../../app/useTituloPagina.ts'
 import estilos from '../Pagina.module.css'
+import { FormularioEmision } from './FormularioEmision.tsx'
 
-/** Pantalla de emisión de factura (`/facturas/nueva`). El formulario se añade en la fase 2, grupos 2 a 5. */
+/** Pantalla de emisión de factura (`/facturas/nueva`). El envío a la API se conecta en el grupo 4. */
 export function EmitirFactura() {
   useTituloPagina('Emitir factura')
   return (
@@ -9,6 +10,7 @@ export function EmitirFactura() {
       <h1 id="titulo-emitir" className={estilos.titulo}>
         Emitir factura
       </h1>
+      <FormularioEmision onEnviar={() => undefined} />
     </section>
   )
 }
