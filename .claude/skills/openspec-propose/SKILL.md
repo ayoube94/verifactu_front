@@ -142,7 +142,12 @@ In both branches, never create the root as a side effect: do not run `openspec i
       - Ask the user to clarify
       - Then continue with creation
 
-7. **Show final status**
+7. **Create the GitHub issues for the change**
+   - Find the phase number and a one-line description in `notes/plan-por-fases.md`. If the change is not a phase in that plan, ask the user for both before continuing.
+   - Run `node scripts/openspec-issues.mjs crear <name> <N> "<descripción>"`. It creates the milestone `Fase N · <name>`, one issue per task in `tasks.md` (already-done tasks are created closed) and the phase issue with the task list.
+   - It is idempotent: if the phase issue already exists, it does nothing. Report its output to the user.
+
+8. **Show final status**
    ```bash
    openspec status --change "<name>"
    ```

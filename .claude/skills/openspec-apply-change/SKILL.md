@@ -111,7 +111,9 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - Before editing, confirm the checkbox at the returned `sourcePath` and `line` still matches the task description; if it does not, rerun the apply instructions and use the refreshed location
    - Mark the task complete at its returned `sourcePath` and `line`: `- [ ]` → `- [x]`
    - Rerun the apply instructions and confirm that task is now done and progress changed
+   - **Sync the GitHub issue**: run `node scripts/openspec-issues.mjs tarea <change> <X.Y>` with the task number (e.g. `2.1`). It closes the `[Fase N] X.Y …` issue. If it reports that no open issue exists, say so and continue; never block the task on it. Skip this step only if `gh` is not authenticated, and report that the issue was not updated.
    - Continue to next task
+   - When the last task of the change is done, run `node scripts/openspec-issues.mjs cerrar <change>` to close the phase issue
 
    **Pause if:**
    - Task is unclear → ask for clarification
@@ -186,7 +188,7 @@ What would you like to do?
 - If task is ambiguous, pause and ask before implementing
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each task
-- Update task checkbox immediately after completing each task
+- Update task checkbox immediately after completing each task, and close its GitHub issue with `scripts/openspec-issues.mjs tarea` in the same step
 - Pause on errors, blockers, or unclear requirements - don't guess
 - When a task needs work beyond what the spec describes, surface the added scope and pause - never silently narrow, defer, or simplify away specified behavior
 - Only mark a task `- [x]` when its specified behavior is fully implemented, not when it is partially done or deferred

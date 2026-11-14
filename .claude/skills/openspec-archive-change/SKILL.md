@@ -192,6 +192,8 @@ In both branches, never create the root as a side effect: do not run `openspec i
    - Whether specs were synced (if applicable)
    - Note about any warnings (incomplete artifacts/tasks)
 
+**GitHub issues:** after the archive succeeds, run `node scripts/openspec-issues.mjs cerrar <archived-change-name>` (the name without the date prefix). It closes the phase issue only if every task issue of the change is closed, and reports otherwise. If it reports open tasks, tell the user which ones remain and ask before archiving anything else; do not close issues by hand.
+
 **Output On Success**
 
 ```markdown
