@@ -174,6 +174,19 @@ export function FormularioEmision({ onEnviar, enviando = false, errorServidor = 
         {errors.lineas?.root?.message && <p className={estilos.errorGeneral}>{errors.lineas.root.message}</p>}
         {typeof errors.lineas?.message === 'string' && <p className={estilos.errorGeneral}>{errors.lineas.message}</p>}
 
+        <div className={estilos.cabeceraLineas} aria-hidden="true">
+          <span>Descripción</span>
+          <span>Cantidad</span>
+          <span>Precio unitario (€)</span>
+          <span>
+            Descuento (€)
+            <span className={estilos.ayudaCabecera}>importe en euros, no porcentaje</span>
+          </span>
+          <span>IVA</span>
+          <span className={estilos.importeCabecera}>Base</span>
+          <span />
+        </div>
+
         <ol className={estilos.lineas}>
           {fields.map((campo, i) => {
             const numero = i + 1

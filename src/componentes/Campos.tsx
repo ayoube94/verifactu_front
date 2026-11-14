@@ -28,7 +28,7 @@ export function CampoTexto({ id, etiqueta, ayuda, error, etiquetaOculta, classNa
         {etiqueta}
       </label>
       {ayuda && (
-        <span id={ayudaId} className={estilos.ayuda}>
+        <span id={ayudaId} className={estilos.ayuda} data-ayuda="">
           {ayuda}
         </span>
       )}
@@ -61,7 +61,7 @@ export function CampoSelect({ id, etiqueta, ayuda, error, etiquetaOculta, classN
         {etiqueta}
       </label>
       {ayuda && (
-        <span id={ayudaId} className={estilos.ayuda}>
+        <span id={ayudaId} className={estilos.ayuda} data-ayuda="">
           {ayuda}
         </span>
       )}

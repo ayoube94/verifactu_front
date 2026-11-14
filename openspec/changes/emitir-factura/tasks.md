@@ -35,8 +35,8 @@
 
 ## 5. Resultado
 
-- [ ] 5.1 Crear `<SumaYSigue>` (huella anterior o «Primer registro de la cadena», y huella propia, agrupada visualmente y completa al copiar). Se verifica con tests de los dos casos y de que `textContent` contiene la huella completa
-- [ ] 5.2 Crear `<RegistroEmitido>`:
+- [x] 5.1 Crear `<SumaYSigue>` (huella anterior o «Primer registro de la cadena», y huella propia, agrupada visualmente y completa al copiar). Se verifica con tests de los dos casos y de que `textContent` contiene la huella completa
+- [x] 5.2 Crear `<RegistroEmitido>`:
   - estado en palabras con su tono;
   - código y mensaje de la AEAT;
   - número, fecha, destinatario y totales del backend;
@@ -45,8 +45,8 @@
   - QR con `alt`.
 
   Se verifica con tests de `ACEPTADO`, `RECHAZADO` (incidencia, con aviso de que no se puede reemitir) y `ERROR_CONEXION`
-- [ ] 5.3 Integrar el resultado en `/facturas/nueva` tras el 201, con «Emitir otra factura» que reinicia el formulario. Se verifica con un test del flujo completo con MSW
-- [ ] 5.4 Pasar `/impeccable critique` y `/impeccable audit` sobre la pantalla (formulario, espera, errores y resultado) y corregir los P0 y P1. Se verifica con `impeccable detect` sin hallazgos sobre la página en marcha, la revisión a 360 px y solo con teclado, y `DESIGN.md` actualizado si se añaden componentes (campos, tabla de líneas)
+- [x] 5.3 Integrar el resultado en `/facturas/nueva` tras el 201, con «Emitir otra factura» que reinicia el formulario. Se verifica con un test del flujo completo con MSW
+- [x] 5.4 Pasar `/impeccable critique` y `/impeccable audit` sobre la pantalla (formulario, espera, errores y resultado) y corregir los P0 y P1. Se verifica con `impeccable detect` sin hallazgos sobre la página en marcha, la revisión a 360 px y solo con teclado, y `DESIGN.md` actualizado si se añaden componentes (campos, tabla de líneas)
 
 ## 6. E2E con Playwright
 

@@ -1,3 +1,9 @@
+.paginaAncha {
+  max-width: var(--ancho-contenido);
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .avisoEmision {
   padding: var(--espacio-4) var(--espacio-5);
   background: var(--color-error-fondo);

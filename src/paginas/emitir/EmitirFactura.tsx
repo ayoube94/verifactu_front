@@ -8,6 +8,7 @@ import estilos from '../Pagina.module.css'
 import { aPeticion, type ValoresValidados } from './esquema.ts'
 import { emitirFactura, type FacturaEmitida } from './emision.ts'
 import { FormularioEmision } from './FormularioEmision.tsx'
+import { RegistroEmitido } from './RegistroEmitido.tsx'
 import formulario from './EmitirFactura.module.css'
 
 /** Pantalla de emisión de factura (`/facturas/nueva`). */
@@ -40,7 +41,7 @@ export function EmitirFactura() {
   const mostrarGeneral = error !== null && error.detalle.tipo !== 'conflicto' && !(error.detalle.tipo === 'validacion' && Object.keys(error.detalle.campos).length > 0)
 
   return (
-    <section className={estilos.pagina} aria-labelledby="titulo-emitir">
+    <section className={`${estilos.pagina} ${formulario.paginaAncha}`} aria-labelledby="titulo-emitir">
       <h1 id="titulo-emitir" className={estilos.titulo}>
         Emitir factura
       </h1>
@@ -58,7 +59,7 @@ export function EmitirFactura() {
 
       {facturaEmitida ? (
         <div className={formulario.resultado}>
-          <p>Factura registrada.</p>
+          <RegistroEmitido factura={facturaEmitida} />
           <button type="button" onClick={verFormulario}>
             Emitir otra factura
           </button>

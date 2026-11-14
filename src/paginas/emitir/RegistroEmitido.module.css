@@ -1,0 +1,108 @@
+.registro {
+  display: grid;
+  gap: var(--espacio-5);
+  max-width: 48rem;
+}
+
+.cabecera {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.numero {
+  font-size: var(--texto-titular);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.02em;
+  color: var(--color-tinta);
+}
+
+.estado {
+  font-size: var(--texto-destacado);
+  font-weight: var(--peso-fuerte);
+}
+
+/* El tono decide el color; el texto siempre lo dice */
+.estado[data-tono='exito'] {
+  color: var(--color-ok);
+}
+
+.estado[data-tono='aviso'] {
+  color: var(--color-aviso);
+}
+
+.estado[data-tono='incidencia'] {
+  color: var(--color-error);
+}
+
+.estado[data-tono='pendiente'] {
+  color: var(--color-tinta);
+}
+
+.respuestaAeat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-3);
+  color: var(--color-texto-sec);
+}
+
+.codigo {
+  font-family: var(--fuente-datos);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto);
+}
+
+.aviso {
+  padding: var(--espacio-3) var(--espacio-4);
+  background: var(--color-error-fondo);
+  border-top: 1px solid var(--color-error);
+  border-bottom: 1px solid var(--color-error);
+}
+
+.datos {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: var(--filete-fuerte);
+}
+
+.datos > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  padding: var(--espacio-2) 0;
+  border-bottom: var(--filete);
+  font-variant-numeric: tabular-nums;
+}
+
+.datos dt,
+.datos dd {
+  margin: 0;
+}
+
+.datos dt {
+  color: var(--color-texto-sec);
+}
+
+.datos dd {
+  text-align: right;
+}
+
+.datos > .total {
+  border-bottom: 2px solid var(--color-tinta);
+  font-size: var(--texto-destacado);
+  font-weight: var(--peso-fuerte);
+  color: var(--color-tinta);
+}
+
+.csv {
+  font-family: var(--fuente-datos);
+}
+
+.qr {
+  margin: 0;
+}
+
+.qr img {
+  border: 6px solid var(--color-superficie);
+  outline: 1px solid var(--color-pauta-fuerte);
+}

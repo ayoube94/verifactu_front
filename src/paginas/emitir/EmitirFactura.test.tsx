@@ -182,3 +182,43 @@ describe('400 por campo de destinatario (4.2)', () => {
     expect(await screen.findByLabelText('NIF')).toHaveAccessibleDescription('El NIF/CIF del cliente es obligatorio')
   })
 })
+
+describe('resultado tras el 201 (5.3)', () => {
+  test('muestra el resultado ante la AEAT y «Emitir otra factura» devuelve un formulario nuevo', async () => {
+    const usuario = userEvent.setup()
+    servidor.use(
+      http.post('/api/v1/facturas', () =>
+        HttpResponse.json(
+          {
+            id: 42,
+            numSerieFactura: '2026-001',
+            fechaExpedicion: '2026-10-14',
+            cliente: { nif: 'A98765432', nombreRazonSocial: 'EMPRESA CLIENTE S.A.', pais: 'ES' },
+            baseImponibleTotal: 1000,
+            cuotaTotal: 210,
+            importeTotal: 1210,
+            verifactu: {
+              huella: 'B826DF16',
+              huellaAnterior: '',
+              estadoEnvio: 'ACEPTADO',
+              csvAeat: 'A1B2C3D4',
+              qrBase64: 'iVBORw0KGgo=',
+            },
+          },
+          { status: 201 },
+        ),
+      ),
+    )
+    renderizarRuta('/facturas/nueva')
+    await rellenarFactura(usuario)
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+
+    expect(await screen.findByText('Aceptada por la AEAT')).toBeInTheDocument()
+    expect(screen.getByText('Primer registro de la cadena')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Emitir' })).not.toBeInTheDocument()
+
+    await usuario.click(screen.getByRole('button', { name: 'Emitir otra factura' }))
+    expect(screen.getByLabelText('Serie')).toHaveValue('')
+    expect(screen.getByRole('button', { name: 'Emitir' })).toBeInTheDocument()
+  })
+})
