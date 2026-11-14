@@ -56,12 +56,12 @@
 
 ## 7. Verificación integral
 
-- [ ] 7.1 Con el backend en perfil `dev` y `npm run dev`:
+- [x] 7.1 Con el backend en perfil `dev` y `npm run dev`:
   - emitir una factura real y ver su resultado y estado;
   - repetir la misma serie y número y ver el 409;
   - enviar una línea con cantidad 0 forzando el bypass del cliente (petición manual) para confirmar que los mensajes del 400 coinciden con los del cliente.
 
-  Anotar el resultado en el PR
+  Anotar el resultado en el PR. Resultado (14/11/2026, backend `main` en dev, AEAT no disponible en dev): emisión real → 201 y «Rechazada por la AEAT» mostrado como incidencia (HTTP 302 de la pasarela); repetir serie y número → 409 junto a serie y número con el mensaje del backend; línea con cantidad 0 enviada a mano → `lineas[0].cantidad` = «La cantidad debe ser mayor que 0», igual que la validación del cliente
 
 ## 8. Contrato completo del backend (depende de `contrato-api-openapi` implementado en el backend)
 
