@@ -1,0 +1,51 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: 2.5rem;
+  padding: var(--espacio-2) var(--espacio-4);
+  border: 1px solid var(--color-tinta);
+  border-radius: var(--radio);
+  font-weight: var(--peso-medio);
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background-color var(--duracion) var(--curva), color var(--duracion) var(--curva);
+}
+
+.principal {
+  background: var(--color-tinta);
+  color: var(--color-tinta-texto);
+}
+
+.principal:hover:not(:disabled) {
+  background: var(--color-tinta-hover);
+  border-color: var(--color-tinta-hover);
+}
+
+.secundario {
+  background: transparent;
+  color: var(--color-tinta);
+}
+
+.secundario:hover:not(:disabled) {
+  background: var(--color-fondo-hundido);
+}
+
+/* El hundimiento al pulsar solo es movimiento: se omite si el usuario pide reducirlo */
+@media (prefers-reduced-motion: no-preference) {
+  .boton:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+.boton:disabled {
+  cursor: not-allowed;
+  border-color: var(--color-borde-control);
+  background: transparent;
+  color: var(--color-texto-inactivo);
+}
+
+.boton[aria-busy='true'] {
+  cursor: progress;
+}

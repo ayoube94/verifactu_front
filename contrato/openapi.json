@@ -1,0 +1,402 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/v1/facturas": {
+      "post": {
+        "tags": [
+          "factura-controller"
+        ],
+        "operationId": "emitirFactura",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacturaCreateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FacturaResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/facturas/{id}": {
+      "get": {
+        "tags": [
+          "factura-controller"
+        ],
+        "operationId": "obtenerFactura",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FacturaResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/facturas/{id}/xml": {
+      "get": {
+        "tags": [
+          "factura-controller"
+        ],
+        "operationId": "descargarXmlAeat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/facturas/auditoria/verificar-huella/{huella}": {
+      "get": {
+        "tags": [
+          "factura-controller"
+        ],
+        "operationId": "verificarIntegridadHuella",
+        "parameters": [
+          {
+            "name": "huella",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClienteDto": {
+        "type": "object",
+        "properties": {
+          "nif": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "nombreRazonSocial": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "direccion": {
+            "type": "string"
+          },
+          "codigoPostal": {
+            "type": "string"
+          },
+          "ciudad": {
+            "type": "string"
+          },
+          "pais": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nif",
+          "nombreRazonSocial"
+        ]
+      },
+      "FacturaCreateDto": {
+        "type": "object",
+        "properties": {
+          "serie": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "numero": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "fechaExpedicion": {
+            "type": "string",
+            "format": "date"
+          },
+          "fechaOperacion": {
+            "type": "string",
+            "format": "date"
+          },
+          "tipoFactura": {
+            "type": "string",
+            "enum": [
+              "F1",
+              "F2",
+              "F3",
+              "R1",
+              "R2",
+              "R3",
+              "R4",
+              "R5"
+            ]
+          },
+          "regimenIva": {
+            "type": "string",
+            "enum": [
+              "REGIMEN_GENERAL",
+              "EXPORTACION",
+              "BIENES_USADOS",
+              "ORO_INVERSION",
+              "AGENCIAS_VIAJES",
+              "GRUPO_ENTIDADES",
+              "CRITERIO_CAJA",
+              "SIMPLIFICADO"
+            ]
+          },
+          "descripcionOperacion": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "cliente": {
+            "$ref": "#/components/schemas/ClienteDto"
+          },
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineaFacturaDto"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "descripcionOperacion",
+          "fechaExpedicion",
+          "lineas",
+          "numero",
+          "serie",
+          "tipoFactura"
+        ]
+      },
+      "LineaFacturaDto": {
+        "type": "object",
+        "properties": {
+          "posicion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descripcion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cantidad": {
+            "type": "number",
+            "minimum": 0.0001
+          },
+          "precioUnitario": {
+            "type": "number",
+            "minimum": 0
+          },
+          "descuento": {
+            "type": "number"
+          },
+          "tipoIva": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "cantidad",
+          "descripcion",
+          "precioUnitario",
+          "tipoIva"
+        ]
+      },
+      "FacturaResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "serie": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "numSerieFactura": {
+            "type": "string"
+          },
+          "fechaExpedicion": {
+            "type": "string",
+            "format": "date"
+          },
+          "fechaOperacion": {
+            "type": "string",
+            "format": "date"
+          },
+          "tipoFactura": {
+            "type": "string",
+            "enum": [
+              "F1",
+              "F2",
+              "F3",
+              "R1",
+              "R2",
+              "R3",
+              "R4",
+              "R5"
+            ]
+          },
+          "regimenIva": {
+            "type": "string",
+            "enum": [
+              "REGIMEN_GENERAL",
+              "EXPORTACION",
+              "BIENES_USADOS",
+              "ORO_INVERSION",
+              "AGENCIAS_VIAJES",
+              "GRUPO_ENTIDADES",
+              "CRITERIO_CAJA",
+              "SIMPLIFICADO"
+            ]
+          },
+          "descripcionOperacion": {
+            "type": "string"
+          },
+          "baseImponibleTotal": {
+            "type": "number"
+          },
+          "cuotaTotal": {
+            "type": "number"
+          },
+          "importeTotal": {
+            "type": "number"
+          },
+          "cliente": {
+            "$ref": "#/components/schemas/ClienteDto"
+          },
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineaFacturaDto"
+            }
+          },
+          "verifactu": {
+            "$ref": "#/components/schemas/RegistroVerifactuDto"
+          }
+        }
+      },
+      "RegistroVerifactuDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "huella": {
+            "type": "string"
+          },
+          "huellaAnterior": {
+            "type": "string"
+          },
+          "fechaHoraGenRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cadenaCanonica": {
+            "type": "string"
+          },
+          "estadoEnvio": {
+            "type": "string",
+            "enum": [
+              "PENDIENTE",
+              "ENVIADO",
+              "ACEPTADO",
+              "ACEPTADO_CON_ERRORES",
+              "RECHAZADO",
+              "ERROR_CONEXION"
+            ]
+          },
+          "codigoRespuestaAeat": {
+            "type": "string"
+          },
+          "mensajeAeat": {
+            "type": "string"
+          },
+          "csvAeat": {
+            "type": "string"
+          },
+          "qrUrl": {
+            "type": "string"
+          },
+          "qrBase64": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

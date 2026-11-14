@@ -1,0 +1,97 @@
+.saltar {
+  position: absolute;
+  top: var(--espacio-2);
+  left: var(--espacio-2);
+  z-index: 10;
+  padding: var(--espacio-2) var(--espacio-4);
+  background: var(--color-superficie);
+  color: var(--color-tinta);
+  font-weight: var(--peso-medio);
+  border-radius: var(--radio);
+  transform: translateY(calc(-100% - var(--espacio-4)));
+}
+
+.saltar:focus-visible {
+  transform: none;
+}
+
+.cabecera {
+  background: var(--color-cabecera);
+  color: var(--color-cabecera-texto);
+}
+
+.barra {
+  max-width: var(--ancho-contenido);
+  margin: 0 auto;
+  min-height: var(--altura-cabecera);
+  padding: 0 var(--espacio-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--espacio-8);
+}
+
+.barra :focus-visible {
+  outline-color: var(--color-foco-sobre-cabecera);
+}
+
+.marca {
+  font-size: var(--texto-destacado);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.01em;
+  color: var(--color-cabecera-texto);
+  text-decoration: none;
+  padding: var(--espacio-4) 0;
+}
+
+.navegacion ul {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--espacio-6);
+  padding: 0;
+  list-style: none;
+}
+
+.enlace {
+  display: block;
+  padding: var(--espacio-4) 0 calc(var(--espacio-4) - 3px);
+  border-bottom: 3px solid transparent;
+  color: var(--color-cabecera-texto-sec);
+  font-size: var(--texto-sec);
+  text-decoration: none;
+  transition: color var(--duracion) var(--curva), border-color var(--duracion) var(--curva);
+}
+
+.enlace:hover {
+  color: var(--color-cabecera-texto);
+}
+
+.enlace[aria-current='page'] {
+  color: var(--color-cabecera-texto);
+  border-bottom-color: var(--color-cabecera-texto);
+}
+
+.salud {
+  margin-left: auto;
+  padding: var(--espacio-3) 0;
+}
+
+.contenido {
+  max-width: var(--ancho-contenido);
+  margin: 0 auto;
+  padding: var(--espacio-6) var(--espacio-4) var(--espacio-8);
+}
+
+.contenido:focus {
+  outline: none;
+}
+
+@media (min-width: 48rem) {
+  .barra {
+    padding: 0 var(--espacio-8);
+  }
+
+  .contenido {
+    padding: var(--espacio-7) var(--espacio-8) var(--espacio-8);
+  }
+}

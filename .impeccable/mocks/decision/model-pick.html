@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Talonario autocopiativo</title>
+<style>
+:root{--azul:#2B4AA0;--copia:#FFF4C2;--rojo:#C8102E;--gris:#5B6170;--texto:#1A1D24;--linea:#D5D8E0}
+*{box-sizing:border-box;margin:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--texto);background:#EEF0F4;font-variant-numeric:tabular-nums}
+header{height:60px;background:#fff;border-bottom:1px solid var(--linea);display:flex;align-items:center;gap:40px;padding:0 48px}
+.marca{font-weight:700;font-size:20px;color:var(--azul)}
+nav{display:flex;gap:24px;font-size:15px}
+nav a{color:var(--gris);text-decoration:none}
+nav a.act{color:var(--azul);font-weight:600}
+.salud{margin-left:auto;font-size:14px;color:var(--gris)}
+.hoja{margin:40px 48px;display:grid;grid-template-columns:360px 1fr;background:#fff;box-shadow:0 2px 8px rgba(26,29,36,.08);height:760px}
+.matriz{background:var(--copia);padding:32px;border-right:2px dashed #B9A86A;color:#3A3420}
+.matriz h2{font-size:13px;letter-spacing:.04em;color:#6B5E2E}
+.num{font-family:ui-monospace,Consolas,monospace;font-size:34px;color:var(--rojo);margin:8px 0 24px}
+.matriz p{font-size:14px;margin-bottom:14px}
+.matriz .hash{font-family:ui-monospace,Consolas,monospace;font-size:13px;word-break:break-all;color:var(--azul)}
+.ok{font-weight:700;color:#1F6B45}
+.cuerpo{padding:40px 48px}
+.cab{display:flex;justify-content:space-between}
+.cab h1{font-size:28px;color:var(--azul)}
+.nro{font-family:ui-monospace,Consolas,monospace;color:var(--rojo);font-size:22px}
+.dest{margin-top:24px;color:var(--gris)}
+.dest b{color:var(--texto);display:block}
+table{width:100%;border-collapse:collapse;margin-top:28px}
+th{text-align:left;font-size:13px;color:var(--gris);border-bottom:1px solid var(--azul);padding:8px 0}
+td{padding:12px 0;border-bottom:1px solid var(--linea);color:var(--azul)}
+.n{text-align:right}
+.total{display:flex;justify-content:flex-end;gap:40px;margin-top:24px;font-size:22px;font-weight:700;color:var(--azul)}
+.acc{display:flex;gap:12px;margin-top:40px}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border-radius:4px;border:1px solid var(--azul);background:#fff;color:var(--azul)}
+.btn.p{background:var(--azul);color:#fff}
+</style></head>
+<body>
+<header><div class="marca">Zefact</div>
+<nav><a href="#">Inicio</a><a href="#">Emitir factura</a><a class="act" href="#">Consultar</a><a href="#">Verificar huella</a></nav>
+<div class="salud">Servicio operativo</div></header>
+<div class="hoja">
+  <div class="matriz">
+    <h2>MATRIZ · REGISTRO VERIFACTU</h2>
+    <div class="num">Nº 2026-001</div>
+    <p class="ok">Aceptada por la AEAT</p>
+    <p>CSV A1B2C3D4E5F6G7H8<br>14/10/2026 20:00:00</p>
+    <p>Huella anterior<br><span class="hash">4F1C9A0E77B2D3C108AA5E6F…</span></p>
+    <p>Huella<br><span class="hash">B826DF163A9C0E4571D288F0…</span></p>
+  </div>
+  <div class="cuerpo">
+    <div class="cab"><h1>Factura ordinaria</h1><span class="nro">2026-001</span></div>
+    <div class="dest"><b>EMPRESA CLIENTE S.A.</b>A98765432 · Paseo de la Castellana 100, 28046 Madrid · Expedida 14/10/2026</div>
+    <table>
+      <thead><tr><th>Descripción</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">IVA</th><th class="n">Base</th></tr></thead>
+      <tbody>
+        <tr><td>Auditoría de Sistemas VeriFactu</td><td class="n">1</td><td class="n">1.000,00 €</td><td class="n">21 %</td><td class="n">1.000,00 €</td></tr>
+        <tr><td>Soporte de integración (horas)</td><td class="n">6</td><td class="n">75,00 €</td><td class="n">21 %</td><td class="n">450,00 €</td></tr>
+      </tbody>
+    </table>
+    <div class="total"><span>Total</span><span>1.754,50 €</span></div>
+    <div class="acc"><button class="btn p">Verificar integridad</button><button class="btn">Descargar XML</button></div>
+  </div>
+</div>
+</body></html>

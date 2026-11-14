@@ -1,0 +1,32 @@
+.aviso {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: var(--espacio-4) var(--espacio-5);
+  background: var(--color-error-fondo);
+  border-top: 1px solid var(--color-error);
+  border-bottom: 1px solid var(--color-error);
+  color: var(--color-texto);
+}
+
+.titulo {
+  font-weight: var(--peso-fuerte);
+  color: var(--color-error);
+}
+
+.cuerpo {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.campos {
+  padding-left: var(--espacio-5);
+}
+
+.codigo {
+  font-family: var(--fuente-datos);
+  word-break: break-all;
+}
+
+.accion {
+  margin-top: var(--espacio-2);
+}

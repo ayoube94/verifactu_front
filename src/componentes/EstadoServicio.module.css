@@ -1,0 +1,33 @@
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  font-size: var(--texto-sec);
+  color: var(--color-cabecera-texto-sec);
+  white-space: nowrap;
+}
+
+.valor {
+  font-weight: var(--peso-medio);
+  color: var(--color-cabecera-texto);
+}
+
+.punto {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-cabecera-texto-sec);
+}
+
+/* El texto ya dice el estado; el punto lo refuerza */
+.estado[data-estado='operativo'] .punto {
+  background: var(--color-ok-sobre-cabecera);
+}
+
+.estado[data-estado='no-disponible'] .punto {
+  background: var(--color-error-sobre-cabecera);
+}
+
+.estado[data-estado='no-disponible'] .valor {
+  color: var(--color-error-texto-sobre-cabecera);
+}

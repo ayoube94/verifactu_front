@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Libro registro</title>
+<style>
+:root{--verde:#1E3B32;--papel:#F5F6F0;--tinta:#24346E;--pauta:#C9D6CC;--pauta-f:#8FAE9A;--texto:#1B2420;--sec:#55615A;--rojo:#B42318;--ok:#1F6B45}
+*{box-sizing:border-box;margin:0}
+html,body{width:1440px;height:900px;overflow:hidden}
+body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--texto);background:var(--papel);font-variant-numeric:tabular-nums}
+header{height:64px;background:var(--verde);color:#EAF1EC;display:flex;align-items:center;gap:48px;padding:0 48px}
+.marca{font-weight:700;font-size:20px;letter-spacing:-.01em}
+nav{display:flex;gap:28px;font-size:15px}
+nav a{color:#C8D8CE;text-decoration:none;padding:20px 0}
+nav a.act{color:#fff;box-shadow:inset 0 -3px 0 #EAF1EC}
+.salud{margin-left:auto;font-size:14px;color:#C8D8CE}
+.salud b{color:#fff;font-weight:600}
+main{display:grid;grid-template-columns:1fr 440px;gap:48px;padding:40px 48px}
+h1{font-size:40px;line-height:1.1;font-weight:700;color:var(--tinta);letter-spacing:-.02em}
+.meta{display:flex;gap:32px;margin-top:12px;color:var(--sec)}
+.meta b{color:var(--texto);font-weight:600}
+.dest{margin-top:32px;padding:16px 0;border-top:1px solid var(--pauta-f);border-bottom:1px solid var(--pauta)}
+.dest b{display:block}
+table{width:100%;border-collapse:collapse;margin-top:28px}
+th{text-align:left;font-size:13px;font-weight:600;color:var(--sec);padding:8px 0;border-bottom:1px solid var(--pauta-f)}
+td{padding:12px 0;border-bottom:1px solid var(--pauta)}
+.n{text-align:right}
+tfoot td{border-bottom:0;padding-top:16px}
+tfoot tr:last-child td{font-weight:700;font-size:20px;border-top:2px solid var(--tinta);color:var(--tinta)}
+aside{border-left:1px solid var(--pauta-f);padding-left:40px}
+.estado{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;color:var(--ok)}
+.estado i{width:12px;height:12px;border-radius:50%;background:var(--ok)}
+.csv{color:var(--sec);margin-top:6px}
+h2{font-size:15px;font-weight:600;margin-top:36px;color:var(--sec)}
+.arrastre{margin-top:12px;padding:14px 16px;background:#EAEFE6;border-top:1px solid var(--pauta-f)}
+.arrastre small{display:block;color:var(--sec);font-size:13px}
+.hash{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:14px;word-break:break-all;color:var(--texto)}
+.propia{padding:14px 16px;border-bottom:2px solid var(--tinta)}
+.propia small{display:block;color:var(--tinta);font-size:13px;font-weight:600}
+.acciones{display:flex;gap:12px;margin-top:36px}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border-radius:6px;border:1px solid var(--tinta);color:var(--tinta);background:transparent}
+.btn.p{background:var(--tinta);color:#fff}
+.qr{display:flex;gap:16px;align-items:center;margin-top:28px}
+.qr span{width:96px;height:96px;background:repeating-conic-gradient(#1B2420 0 25%,#fff 0 50%) 0 0/12px 12px;border:6px solid #fff;outline:1px solid var(--pauta-f)}
+.qr p{font-size:14px;color:var(--sec)}
+</style></head>
+<body>
+<header>
+  <div class="marca">Zefact</div>
+  <nav><a href="#">Inicio</a><a href="#">Emitir factura</a><a class="act" href="#">Consultar</a><a href="#">Verificar huella</a></nav>
+  <div class="salud">Servicio <b>operativo</b></div>
+</header>
+<main>
+  <section>
+    <h1>2026-001</h1>
+    <div class="meta"><span>Expedida <b>14/10/2026</b></span><span>Tipo <b>F1 · Ordinaria</b></span><span>Régimen <b>01 · General</b></span></div>
+    <div class="dest"><b>EMPRESA CLIENTE S.A.</b>A98765432 · Paseo de la Castellana 100, 28046 Madrid</div>
+    <table>
+      <thead><tr><th>Descripción</th><th class="n">Cantidad</th><th class="n">Precio</th><th class="n">IVA</th><th class="n">Base</th></tr></thead>
+      <tbody>
+        <tr><td>Auditoría de Sistemas VeriFactu</td><td class="n">1</td><td class="n">1.000,00 €</td><td class="n">21 %</td><td class="n">1.000,00 €</td></tr>
+        <tr><td>Soporte de integración (horas)</td><td class="n">6</td><td class="n">75,00 €</td><td class="n">21 %</td><td class="n">450,00 €</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="4">Base imponible</td><td class="n">1.450,00 €</td></tr>
+        <tr><td colspan="4">Cuota IVA</td><td class="n">304,50 €</td></tr>
+        <tr><td colspan="4">Importe total</td><td class="n">1.754,50 €</td></tr>
+      </tfoot>
+    </table>
+  </section>
+  <aside>
+    <div class="estado"><i></i>Aceptada por la AEAT</div>
+    <p class="csv">CSV A1B2C3D4E5F6G7H8 · 14/10/2026 20:00:00</p>
+    <h2>Encadenamiento</h2>
+    <div class="arrastre"><small>Suma y sigue · huella anterior (2026-000)</small><span class="hash">4F1C 9A0E 77B2 D3C1 08AA 5E6F 1290 BC44 …</span></div>
+    <div class="propia"><small>Huella de este registro</small><span class="hash">B826 DF16 3A9C 0E45 71D2 88F0 A6B3 9C21 …</span></div>
+    <div class="qr"><span></span><p>QR de cotejo<br>VERI*FACTU</p></div>
+    <div class="acciones"><button class="btn p">Verificar integridad</button><button class="btn">Descargar XML</button></div>
+  </aside>
+</main>
+</body></html>
