@@ -76,6 +76,14 @@
   font-weight: var(--peso-medio);
 }
 
+/* En móvil la base lleva su etiqueta; en escritorio la cubre la cabecera de la tabla */
+.etiquetaBase {
+  display: block;
+  font-size: var(--texto-pequeno);
+  font-weight: var(--peso-normal);
+  color: var(--color-texto-sec);
+}
+
 .quitar {
   justify-self: start;
 }
@@ -178,5 +186,9 @@
 
   .importeLinea {
     text-align: right;
+  }
+
+  .etiquetaBase {
+    display: none;
   }
 }
