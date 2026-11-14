@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { useSalud } from '../api/salud.ts'
 import { Boton } from '../componentes/Boton.tsx'
 import { useTituloPagina } from '../app/useTituloPagina.ts'
@@ -8,17 +9,17 @@ const operaciones = [
   {
     nombre: 'Emitir factura',
     descripcion: 'Registrar una factura, encadenarla con su huella y remitirla a la AEAT.',
-    disponible: 'Próxima fase',
+    ruta: '/facturas/nueva',
   },
   {
     nombre: 'Consultar factura',
     descripcion: 'Ver sus líneas, el estado ante la AEAT, el QR y descargar el XML enviado.',
-    disponible: 'Próxima fase',
+    ruta: null,
   },
   {
     nombre: 'Verificar huella',
     descripcion: 'Comprobar que un registro no se ha alterado recalculando su huella.',
-    disponible: 'Próxima fase',
+    ruta: null,
   },
 ] as const
 
@@ -40,9 +41,11 @@ export function Inicio() {
         <ul className={estilos.operaciones}>
           {operaciones.map((operacion) => (
             <li key={operacion.nombre} className={estilos.operacion}>
-              <span className={estilos.nombre}>{operacion.nombre}</span>
+              <span className={estilos.nombre}>
+                {operacion.ruta ? <Link to={operacion.ruta}>{operacion.nombre}</Link> : operacion.nombre}
+              </span>
               <span className={estilos.descripcion}>{operacion.descripcion}</span>
-              <span className={estilos.disponible}>{operacion.disponible}</span>
+              <span className={estilos.disponible}>{operacion.ruta ? 'Disponible' : 'Próxima fase'}</span>
             </li>
           ))}
         </ul>
