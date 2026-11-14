@@ -1,7 +1,5 @@
-/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
-import { configDefaults } from 'vitest/config'
-import { defineConfig } from 'vite'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 // Backend local para `npm run dev`. Solo se lee aquí, en Node: no lleva prefijo VITE_ y nunca llega al cliente.
 const backend = process.env.BACKEND_URL ?? 'http://localhost:8080'
