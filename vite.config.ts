@@ -1,6 +1,5 @@
-/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 // Backend local para `npm run dev`. Solo se lee aquí, en Node: no lleva prefijo VITE_ y nunca llega al cliente.
 const backend = process.env.BACKEND_URL ?? 'http://localhost:8080'
@@ -18,6 +17,8 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // Los E2E son de Playwright (npm run test:e2e), no de Vitest
+    exclude: [...configDefaults.exclude, 'e2e/**'],
     setupFiles: ['./src/pruebas/setup.ts'],
     restoreMocks: true,
   },

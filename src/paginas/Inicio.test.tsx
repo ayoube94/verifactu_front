@@ -6,23 +6,24 @@ import { renderizarRuta } from '../pruebas/renderizar.tsx'
 import { servidor } from '../pruebas/servidor.ts'
 
 describe('página de inicio', () => {
-  test('explica para qué sirve y anuncia las operaciones sin enlaces rotos', () => {
+  test('explica para qué sirve; solo Emitir factura es enlace y el resto anuncia la fase', () => {
     renderizarRuta('/')
 
     const principal = screen.getByRole('main')
     expect(within(principal).getByRole('heading', { level: 1, name: 'Facturación VeriFactu' })).toBeInTheDocument()
-    for (const operacion of ['Emitir factura', 'Consultar factura', 'Verificar huella']) {
+    expect(within(principal).getByRole('link', { name: 'Emitir factura' })).toHaveAttribute('href', '/facturas/nueva')
+    for (const operacion of ['Consultar factura', 'Verificar huella']) {
       expect(within(principal).getByText(operacion)).toBeInTheDocument()
       // Aún no existen: se nombran, pero no son enlaces
       expect(within(principal).queryByRole('link', { name: operacion })).not.toBeInTheDocument()
     }
-    expect(within(principal).queryAllByRole('link')).toHaveLength(0)
+    expect(within(principal).queryAllByRole('link')).toHaveLength(1)
   })
 
   test('la navegación solo contiene secciones existentes', () => {
     renderizarRuta('/')
     const enlaces = within(screen.getByRole('navigation', { name: 'Principal' })).getAllByRole('link')
-    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio'])
+    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio', 'Emitir factura'])
   })
 
   test('muestra el servicio operativo', async () => {

@@ -1,0 +1,51 @@
+.cadena {
+  display: grid;
+  border-top: var(--filete-fuerte);
+}
+
+.anterior {
+  display: grid;
+  gap: var(--espacio-1);
+  padding: var(--espacio-3) var(--espacio-4);
+  background: var(--color-fondo-hundido);
+  border-top: 1px solid var(--color-pauta-fuerte);
+}
+
+.propia {
+  display: grid;
+  gap: var(--espacio-1);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-bottom: 2px solid var(--color-tinta);
+}
+
+.etiqueta,
+.etiquetaPropia {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-sec);
+}
+
+.etiquetaPropia {
+  color: var(--color-tinta);
+  font-weight: var(--peso-medio);
+}
+
+.primera {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-sec);
+}
+
+.huella {
+  font-family: var(--fuente-datos);
+  font-size: var(--texto-pequeno);
+  word-break: break-all;
+  color: var(--color-texto);
+}
+
+/* Separación visual cada 4 caracteres; el texto copiado no lleva espacios */
+.grupo {
+  margin-right: 0.35em;
+}
+
+.grupo:nth-child(4n) {
+  margin-right: 0.9em;
+}

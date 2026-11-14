@@ -203,3 +203,10 @@ En el detalle de una factura (fase 3): un bloque de papel hundido con «Suma y s
 - **Don't** cargar fuentes, iconos ni imágenes de otros orígenes.
 - **Don't** dibujar la pauta del libro literalmente (papel rayado de fondo): solo filetes y cifras alineadas.
 - **Don't** poner un rótulo pequeño encima de un título.
+
+## Componentes de la emisión (fase 2)
+
+- **Campos** (`src/componentes/Campos.tsx`): etiqueta visible, ayuda opcional y error asociado con `aria-describedby` y `aria-invalid`. El error se marca con borde, texto y mensaje, nunca solo con color.
+- **Tabla de líneas**: en escritorio, una cabecera pautada con columnas fijas (descripción, cantidad, precio, descuento, IVA, base) y las etiquetas de cada campo ocultas visualmente. A partir de 360 px, cada línea es un bloque apilado con etiquetas visibles.
+- **Totales orientativos**: pie con filete índigo de 2 px; el importe total es el único texto índigo en negrita.
+- **«Suma y sigue» en el resultado** (`src/paginas/emitir/SumaYSigue.tsx`): la huella se agrupa en bloques de 4 solo visualmente; el texto copiado es la huella completa.

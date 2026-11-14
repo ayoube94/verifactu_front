@@ -12,12 +12,14 @@ interface PropiedadesMensajeError {
   mensajeNoEncontrado?: string
   /** El formulario ya muestra los errores junto a cada campo: no repetirlos aquí. */
   ocultarCampos?: boolean
+  /** Sin botón de reintento ni de recarga (p. ej. una emisión que no debe repetirse sola). */
+  sinAccion?: boolean
 }
 
 const recargar = () => window.location.reload()
 
 /** Presenta de forma uniforme cualquier error de la API (spec cliente-api). */
-export function MensajeError({ error, onReintentar, mensajeNoEncontrado, ocultarCampos = false }: PropiedadesMensajeError) {
+export function MensajeError({ error, onReintentar, mensajeNoEncontrado, ocultarCampos = false, sinAccion = false }: PropiedadesMensajeError) {
   const { detalle } = normalizarError(error)
   const reintentar = onReintentar ?? recargar
   const textoReintentar = onReintentar ? 'Reintentar' : 'Recargar la página'
@@ -58,7 +60,7 @@ export function MensajeError({ error, onReintentar, mensajeNoEncontrado, ocultar
       )
     case 'servidor':
       return (
-        <Aviso titulo="Error del servidor" accion={<Boton onClick={reintentar}>{textoReintentar}</Boton>}>
+        <Aviso titulo="Error del servidor" accion={sinAccion ? undefined : <Boton onClick={reintentar}>{textoReintentar}</Boton>}>
           <p>Se ha producido un error inesperado en el servidor y la operación no se ha completado.</p>
           {detalle.errorId && (
             <p>
@@ -69,7 +71,7 @@ export function MensajeError({ error, onReintentar, mensajeNoEncontrado, ocultar
       )
     case 'red':
       return (
-        <Aviso titulo="Sin conexión con el servicio" accion={<Boton onClick={reintentar}>{textoReintentar}</Boton>}>
+        <Aviso titulo="Sin conexión con el servicio" accion={sinAccion ? undefined : <Boton onClick={reintentar}>{textoReintentar}</Boton>}>
           <p>No se ha podido contactar con Zefact. Comprueba tu conexión e inténtalo de nuevo.</p>
         </Aviso>
       )

@@ -44,6 +44,18 @@ jobs:
       - name: Build y comprobación de secretos en dist/
         run: npm run build
 
+      - name: Caché de Chromium para Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Tests E2E de emisión
+        run: npm run test:e2e
+
       - name: Tipos de la API coherentes con el contrato
         run: npm run api:check
 

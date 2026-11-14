@@ -1,0 +1,182 @@
+.formulario {
+  display: grid;
+  min-width: 0;
+  gap: var(--espacio-7);
+  max-width: 64rem;
+}
+
+.bloque {
+  display: grid;
+  min-width: 0;
+  gap: var(--espacio-4);
+  padding-top: var(--espacio-4);
+  border-top: var(--filete-fuerte);
+}
+
+.subtitulo {
+  font-size: var(--texto-sec);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-sec);
+}
+
+.nota {
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-sec);
+}
+
+.errorGeneral {
+  padding: var(--espacio-3) var(--espacio-4);
+  background: var(--color-error-fondo);
+  border-top: 1px solid var(--color-error);
+  border-bottom: 1px solid var(--color-error);
+  color: var(--color-texto);
+}
+
+.cabecera,
+.destinatario {
+  display: grid;
+  gap: var(--espacio-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.anchoCompleto {
+  grid-column: 1 / -1;
+}
+
+/* Líneas: en escritorio, una fila pautada con columnas fijas; en móvil, un bloque por línea */
+.cabeceraLineas {
+  display: none;
+}
+
+.lineas {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linea {
+  display: grid;
+  min-width: 0;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4) 0;
+  border-bottom: var(--filete);
+  align-items: end;
+}
+
+.numeroLinea {
+  font-size: var(--texto-pequeno);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-sec);
+}
+
+.importeLinea {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-weight: var(--peso-medio);
+}
+
+.quitar {
+  justify-self: start;
+}
+
+.anadir {
+  justify-self: start;
+}
+
+.orientativo {
+  font-weight: var(--peso-normal);
+  font-size: var(--texto-pequeno);
+  color: var(--color-texto-inactivo);
+}
+
+.filas {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: 0;
+}
+
+.filas > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  font-variant-numeric: tabular-nums;
+}
+
+.filas dt,
+.filas dd {
+  margin: 0;
+}
+
+.total {
+  padding-top: var(--espacio-3);
+  border-top: 2px solid var(--color-tinta);
+  font-size: var(--texto-destacado);
+  font-weight: var(--peso-fuerte);
+  color: var(--color-tinta);
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 48rem) {
+  .cabeceraLineas {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) 6rem 8rem 8rem 6rem 7rem 6rem;
+    gap: var(--espacio-2);
+    padding-bottom: var(--espacio-2);
+    border-bottom: var(--filete-fuerte);
+    font-size: var(--texto-pequeno);
+    font-weight: var(--peso-medio);
+    color: var(--color-texto-sec);
+  }
+
+  .ayudaCabecera {
+    display: block;
+    font-weight: var(--peso-normal);
+    color: var(--color-texto-inactivo);
+  }
+
+  .importeCabecera {
+    text-align: right;
+  }
+
+  .cabecera {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .destinatario {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .linea {
+    grid-template-columns: minmax(0, 2.2fr) 6rem 8rem 8rem 6rem 7rem 6rem;
+    align-items: center;
+    gap: var(--espacio-2);
+    padding: var(--espacio-2) 0;
+  }
+
+  /* En escritorio las etiquetas van en la cabecera de la tabla; los controles quedan alineados en columnas */
+  .linea label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .linea [data-ayuda] {
+    display: none;
+  }
+
+  .numeroLinea {
+    display: none;
+  }
+
+  .importeLinea {
+    text-align: right;
+  }
+}
