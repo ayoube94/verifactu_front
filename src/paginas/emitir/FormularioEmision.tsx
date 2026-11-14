@@ -253,7 +253,8 @@ export function FormularioEmision({ onEnviar, enviando = false, errorServidor = 
                     </option>
                   ))}
                 </CampoSelect>
-                <span className={estilos.importeLinea} aria-label={`Base de la línea ${numero}`}>
+                <span className={estilos.importeLinea}>
+                  <span className={estilos.etiquetaBase}>Base</span>
                   {resultado ? formatearImporte(aTexto(resultado.base, 2)) : '—'}
                 </span>
                 <Boton

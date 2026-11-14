@@ -168,3 +168,10 @@ describe('la guarda se libera si la validación falla', () => {
     expect(onEnviar).toHaveBeenCalledOnce()
   })
 })
+
+describe('base de cada línea', () => {
+  test('cada línea muestra su base con la etiqueta «Base»', () => {
+    render(<FormularioEmision onEnviar={sinEnvio()} />)
+    expect(within(screen.getAllByRole('listitem')[0]).getByText('Base')).toBeInTheDocument()
+  })
+})
