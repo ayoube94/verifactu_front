@@ -108,3 +108,19 @@ describe('fallos sin respuesta', () => {
     expect(normalizarError('cualquier cosa').detalle).toEqual({ tipo: 'red' })
   })
 })
+
+describe('409 con facturaId (contrato-api-openapi)', () => {
+  test('el facturaId de la factura existente llega al conflicto', () => {
+    const error = errorDesdeRespuesta(409, {
+      type: 'https://verifactu.aeat.es/errors/business-conflict',
+      status: 409,
+      detail: 'Ya existe una factura registrada con la serie 2026 y número 001',
+      facturaId: 42,
+    })
+    expect(error.detalle).toEqual({
+      tipo: 'conflicto',
+      mensaje: 'Ya existe una factura registrada con la serie 2026 y número 001',
+      facturaId: 42,
+    })
+  })
+})

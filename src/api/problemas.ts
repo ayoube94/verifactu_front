@@ -1,37 +1,19 @@
+import type { components } from './schema.d.ts'
+
 /**
- * Tipos que el contrato OpenAPI del backend todavía no documenta, escritos a mano a partir de
- * GlobalExceptionHandler, ApiKeyFilter y FacturaController del backend. Cuando el backend los
- * publique en openapi.json, se sustituyen por los generados en schema.d.ts.
+ * Cuerpo RFC 7807 de los errores, tomado del contrato OpenAPI del backend (schema.d.ts).
+ * Los campos extra dependen del tipo de error: `errores` (400), `facturaId` (409) y `errorId` (500).
  */
+export type ProblemDetail = components['schemas']['ProblemDetail'] &
+  Partial<components['schemas']['ProblemaValidacion'] & components['schemas']['ProblemaFacturaDuplicada'] & components['schemas']['ProblemaErrorInterno']>
 
-/** Cuerpo RFC 7807 que devuelve el backend en los errores. */
-export interface ProblemDetail {
-  type?: string
-  title?: string
-  status?: number
-  detail?: string
-  instance?: string
-  timestamp?: string
-  /** Solo en 400 de validación: mensaje por campo (p. ej. `serie`, `cliente.nif`, `lineas[0].cantidad`). */
-  errores?: Record<string, string>
-  /** Solo en 500: identificador que también aparece en el log del servidor. */
-  errorId?: string
-}
-
-/** Respuesta de `GET /api/v1/facturas/auditoria/verificar-huella/{huella}` (el contrato la declara `object`). */
-export interface VerificacionHuella {
-  huella: string
-  huellaAnterior: string
-  fechaGeneracion: string
-  cadenaCanonica: string
-  integridadValida: boolean
-  mensaje: string
-}
+/** Respuesta de GET /api/v1/facturas/auditoria/verificar-huella/{huella}. */
+export type VerificacionHuella = components['schemas']['VerificacionHuellaDto']
 
 /** Error de la API traducido a lo que la pantalla necesita para explicarlo. */
 export type DetalleError =
   | { tipo: 'validacion'; mensaje: string; campos: Record<string, string> }
-  | { tipo: 'conflicto'; mensaje: string }
+  | { tipo: 'conflicto'; mensaje: string; facturaId?: number }
   | { tipo: 'no-encontrado'; mensaje?: string }
   | { tipo: 'no-autorizado' }
   | { tipo: 'servidor'; estado: number; errorId?: string }
@@ -87,7 +69,11 @@ export function errorDesdeRespuesta(estado: number, cuerpo: unknown): ErrorApi {
     case estado === 404:
       return new ErrorApi({ tipo: 'no-encontrado', mensaje: detalle ?? problema.error })
     case estado === 409:
-      return new ErrorApi({ tipo: 'conflicto', mensaje: detalle ?? 'La operación entra en conflicto con datos existentes.' })
+      return new ErrorApi({
+        tipo: 'conflicto',
+        mensaje: detalle ?? 'La operación entra en conflicto con datos existentes.',
+        facturaId: typeof problema.facturaId === 'number' ? problema.facturaId : undefined,
+      })
     default:
       // 5xx y cualquier otro código inesperado: mensaje genérico, sin detalles técnicos
       return new ErrorApi({

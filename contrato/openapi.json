@@ -1,8 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI definition",
-    "version": "v0"
+    "title": "VeriFactu Backend",
+    "description": "API de emisión y consulta de facturas con registro VeriFactu (encadenamiento SHA-256 y envío a la AEAT)",
+    "version": "1.0.0-SNAPSHOT"
   },
   "servers": [
     {
@@ -16,6 +17,8 @@
         "tags": [
           "factura-controller"
         ],
+        "summary": "Emitir una factura",
+        "description": "Crea la factura, la encadena con la anterior y la remite a la AEAT. Si la AEAT no responde o rechaza el registro, la factura se crea igualmente con estadoEnvio ERROR_CONEXION o RECHAZADO, así que el 201 no garantiza aceptación.",
         "operationId": "emitirFactura",
         "requestBody": {
           "content": {
@@ -28,8 +31,17 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Factura creada. Puede tener estadoEnvio RECHAZADO o ERROR_CONEXION.",
+            "headers": {
+              "Location": {
+                "description": "URL de la factura creada (GET /api/v1/facturas/{id})",
+                "style": "simple",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -37,8 +49,53 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Datos no válidos. 'errores' indica cada campo.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemaValidacion"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ya existe una factura con esa serie y número. 'facturaId' indica cuál.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemaFacturaDuplicada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno. 'errorId' permite localizarlo en el log.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemaErrorInterno"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
       }
     },
     "/api/v1/facturas/{id}": {
@@ -46,11 +103,13 @@
         "tags": [
           "factura-controller"
         ],
+        "summary": "Consultar una factura por id",
         "operationId": "obtenerFactura",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador numérico de la factura",
             "required": true,
             "schema": {
               "type": "integer",
@@ -60,7 +119,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Factura encontrada",
             "content": {
               "application/json": {
                 "schema": {
@@ -68,8 +127,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe ninguna factura con ese id",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
       }
     },
     "/api/v1/facturas/{id}/xml": {
@@ -77,11 +161,13 @@
         "tags": [
           "factura-controller"
         ],
+        "summary": "Descargar el XML enviado a la AEAT",
         "operationId": "descargarXmlAeat",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador numérico de la factura",
             "required": true,
             "schema": {
               "type": "integer",
@@ -91,7 +177,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "XML del registro enviado",
             "content": {
               "application/xml": {
                 "schema": {
@@ -99,20 +185,57 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe ninguna factura con ese id",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
       }
     },
-    "/api/v1/facturas/auditoria/verificar-huella/{huella}": {
+    "/api/v1/facturas/por-numero": {
       "get": {
         "tags": [
           "factura-controller"
         ],
-        "operationId": "verificarIntegridadHuella",
+        "summary": "Consultar una factura por serie y número",
+        "description": "Devuelve lo mismo que GET /{id}. Útil si una emisión no obtuvo respuesta: se consulta antes de reintentar. Serie y número se comparan exactamente como se guardaron.",
+        "operationId": "obtenerFacturaPorNumero",
         "parameters": [
           {
-            "name": "huella",
-            "in": "path",
+            "name": "serie",
+            "in": "query",
+            "description": "Serie de la factura, exactamente como se emitió",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "numero",
+            "in": "query",
+            "description": "Número de la factura, exactamente como se emitió",
             "required": true,
             "schema": {
               "type": "string"
@@ -121,17 +244,108 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Factura encontrada",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
+                  "$ref": "#/components/schemas/FacturaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Falta la serie o el número",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe ninguna factura con esa serie y número",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
+      }
+    },
+    "/api/v1/facturas/auditoria/verificar-huella/{huella}": {
+      "get": {
+        "tags": [
+          "factura-controller"
+        ],
+        "summary": "Verificar la integridad de un registro por su huella",
+        "operationId": "verificarIntegridadHuella",
+        "parameters": [
+          {
+            "name": "huella",
+            "in": "path",
+            "description": "Huella SHA-256 (64 caracteres hexadecimales)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado de la verificación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificacionHuellaDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe ningún registro con esa huella",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
       }
     }
   },
@@ -191,6 +405,7 @@
           },
           "tipoFactura": {
             "type": "string",
+            "description": "Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.",
             "enum": [
               "F1",
               "F2",
@@ -204,6 +419,7 @@
           },
           "regimenIva": {
             "type": "string",
+            "description": "Régimen o clave de IVA. Código AEAT: 01 régimen general, 02 exportación, 03 bienes usados, 04 oro de inversión, 05 agencias de viajes, 06 grupo de entidades, 07 criterio de caja, 08 recargo de equivalencia.",
             "enum": [
               "REGIMEN_GENERAL",
               "EXPORTACION",
@@ -260,10 +476,12 @@
             "minimum": 0
           },
           "descuento": {
-            "type": "number"
+            "type": "number",
+            "description": "Importe a restar de la base de la línea, en euros. No es un porcentaje."
           },
           "tipoIva": {
-            "type": "number"
+            "type": "number",
+            "description": "Tipo de IVA en porcentaje: 21.00, 10.00, 4.00 o 0.00."
           }
         },
         "required": [
@@ -299,6 +517,7 @@
           },
           "tipoFactura": {
             "type": "string",
+            "description": "Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.",
             "enum": [
               "F1",
               "F2",
@@ -312,6 +531,7 @@
           },
           "regimenIva": {
             "type": "string",
+            "description": "Régimen o clave de IVA. Código AEAT: 01 régimen general, 02 exportación, 03 bienes usados, 04 oro de inversión, 05 agencias de viajes, 06 grupo de entidades, 07 criterio de caja, 08 recargo de equivalencia.",
             "enum": [
               "REGIMEN_GENERAL",
               "EXPORTACION",
@@ -371,6 +591,7 @@
           },
           "estadoEnvio": {
             "type": "string",
+            "description": "Estado del envío a la AEAT. Una emisión puede devolver 201 con RECHAZADO o ERROR_CONEXION: la factura queda creada pero no aceptada. Solo ACEPTADO y ACEPTADO_CON_ERRORES indican aceptación.",
             "enum": [
               "PENDIENTE",
               "ENVIADO",
@@ -396,6 +617,153 @@
             "type": "string"
           }
         }
+      },
+      "ProblemaValidacion": {
+        "type": "object",
+        "description": "ProblemDetail 400: datos no válidos. 'errores' indica el campo y el motivo",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "errores": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Mapa campo -> motivo, por ejemplo {\"lineas[0].tipoIva\": \"El tipo de IVA es obligatorio\"}"
+          }
+        }
+      },
+      "ProblemaFacturaDuplicada": {
+        "type": "object",
+        "description": "ProblemDetail 409: ya existe una factura con esa serie y número. Usar 'facturaId' para recuperarla con GET /{id} o GET /por-numero",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "facturaId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificador numérico de la factura existente"
+          }
+        }
+      },
+      "ProblemaErrorInterno": {
+        "type": "object",
+        "description": "ProblemDetail 500: error interno. Sin detalle técnico; 'errorId' permite localizar la traza en el log",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "description": "Identificador del error para buscarlo en el log del servidor"
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "VerificacionHuellaDto": {
+        "type": "object",
+        "description": "Resultado de recomputar la huella de un registro a partir de su cadena canónica",
+        "properties": {
+          "huella": {
+            "type": "string",
+            "description": "Huella SHA-256 del registro (64 caracteres hexadecimales)"
+          },
+          "huellaAnterior": {
+            "type": "string",
+            "description": "Huella del registro anterior de la cadena; vacía en el primer registro"
+          },
+          "fechaGeneracion": {
+            "type": "string",
+            "description": "Fecha-hora de generación del registro, en ISO-8601 con offset"
+          },
+          "cadenaCanonica": {
+            "type": "string",
+            "description": "Cadena canónica sobre la que se calculó la huella"
+          },
+          "integridadValida": {
+            "type": "boolean",
+            "description": "true si la huella recomputada coincide con la guardada"
+          },
+          "mensaje": {
+            "type": "string",
+            "description": "Mensaje legible del resultado"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "X-API-Key": {
+        "type": "apiKey",
+        "description": "Clave de API. Obligatoria en producción; sin ella la API responde 401.",
+        "name": "X-API-Key",
+        "in": "header"
       }
     }
   }

@@ -151,18 +151,59 @@ describe('errores del servidor (4.2 y 4.3)', () => {
   })
 })
 
-describe('fallo de red en la emisión (4.4)', () => {
-  test('sin respuesta: dice que no se sabe si se emitió y no ofrece reintentar', async () => {
+describe('fallo de red en la emisión (4.4 y 8.2)', () => {
+  const resultadoPorNumero = { id: 42, numSerieFactura: '2026-001', fechaExpedicion: '2026-10-14', baseImponibleTotal: 1000, cuotaTotal: 210, importeTotal: 1210, verifactu: { huella: 'B826DF16', huellaAnterior: '', estadoEnvio: 'ACEPTADO', csvAeat: 'A1B2C3D4', qrBase64: 'iVBORw0KGgo=' } }
+
+  test('sin respuesta y por-numero encuentra la factura: muestra que ya se había emitido, sin reintentar', async () => {
     const usuario = userEvent.setup()
-    servidor.use(http.post('/api/v1/facturas', () => HttpResponse.error()))
+    const emisiones = vi.fn<() => void>()
+    servidor.use(
+      http.post('/api/v1/facturas', () => (emisiones(), HttpResponse.error())),
+      http.get('/api/v1/facturas/por-numero', () => HttpResponse.json(resultadoPorNumero, { status: 200 })),
+    )
     renderizarRuta('/facturas/nueva')
     await rellenarFactura(usuario)
     await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'No se sabe si la factura se emitió: compruébalo antes de volver a emitirla.',
+    expect(await screen.findByText('Esta factura ya se había emitido.')).toBeInTheDocument()
+    expect(screen.getByText('Aceptada por la AEAT')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Reintentar la emisión' })).not.toBeInTheDocument()
+    expect(emisiones).toHaveBeenCalledOnce()
+  })
+
+  test('sin respuesta y por-numero da 404: ofrece reintentar con los mismos datos', async () => {
+    const usuario = userEvent.setup()
+    const peticiones: unknown[] = []
+    servidor.use(
+      http.post('/api/v1/facturas', async ({ request }) => {
+        peticiones.push(await request.json())
+        return peticiones.length === 1 ? HttpResponse.error() : HttpResponse.json(resultadoPorNumero, { status: 201 })
+      }),
+      http.get('/api/v1/facturas/por-numero', () => HttpResponse.json({ status: 404, detail: 'No existe' }, { status: 404 })),
     )
-    expect(screen.queryByRole('button', { name: /Reintentar|Recargar/ })).not.toBeInTheDocument()
+    renderizarRuta('/facturas/nueva')
+    await rellenarFactura(usuario)
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+
+    await usuario.click(await screen.findByRole('button', { name: 'Reintentar la emisión' }))
+    expect(await screen.findByText('Aceptada por la AEAT')).toBeInTheDocument()
+    expect(peticiones).toHaveLength(2)
+    expect(peticiones[1]).toEqual(peticiones[0])
+  })
+
+  test('sin respuesta y la comprobación tampoco responde: no reintenta y ofrece comprobar de nuevo', async () => {
+    const usuario = userEvent.setup()
+    servidor.use(
+      http.post('/api/v1/facturas', () => HttpResponse.error()),
+      http.get('/api/v1/facturas/por-numero', () => HttpResponse.error()),
+    )
+    renderizarRuta('/facturas/nueva')
+    await rellenarFactura(usuario)
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+
+    expect(await screen.findByText('No se ha podido comprobar. No se reintenta hasta saber si la factura existe.')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Reintentar la emisión' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Comprobar de nuevo' })).toBeInTheDocument()
     expect(screen.getByLabelText('Serie')).toHaveValue('2026')
   })
 })
@@ -220,5 +261,43 @@ describe('resultado tras el 201 (5.3)', () => {
     await usuario.click(screen.getByRole('button', { name: 'Emitir otra factura' }))
     expect(screen.getByLabelText('Serie')).toHaveValue('')
     expect(screen.getByRole('button', { name: 'Emitir' })).toBeInTheDocument()
+  })
+})
+
+describe('409 con facturaId (8.3)', () => {
+  test('ofrece ver la factura existente y la carga con GET /{id}', async () => {
+    const usuario = userEvent.setup()
+    const consultadas = vi.fn<(id: string) => void>()
+    servidor.use(
+      http.post('/api/v1/facturas', () =>
+        HttpResponse.json(
+          { status: 409, detail: 'Ya existe una factura registrada con la serie 2026 y número 001', facturaId: 42 },
+          { status: 409 },
+        ),
+      ),
+      http.get('/api/v1/facturas/:id', ({ params }) => {
+        consultadas(String(params.id))
+        return HttpResponse.json(
+          {
+            id: 42,
+            numSerieFactura: '2026-001',
+            fechaExpedicion: '2026-10-14',
+            baseImponibleTotal: 1000,
+            cuotaTotal: 210,
+            importeTotal: 1210,
+            verifactu: { huella: 'B826DF16', huellaAnterior: '', estadoEnvio: 'ACEPTADO', csvAeat: 'A1B2C3D4', qrBase64: 'iVBORw0KGgo=' },
+          },
+          { status: 200 },
+        )
+      }),
+    )
+    renderizarRuta('/facturas/nueva')
+    await rellenarFactura(usuario)
+    await usuario.click(screen.getByRole('button', { name: 'Emitir' }))
+
+    await usuario.click(await screen.findByRole('button', { name: 'Ver la factura existente' }))
+    expect(await screen.findByText('Aceptada por la AEAT')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Factura 2026-001' })).toBeInTheDocument()
+    expect(consultadas).toHaveBeenCalledWith('42')
   })
 })
