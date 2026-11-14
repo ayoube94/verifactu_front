@@ -1,13 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useId } from 'react'
-import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { useEffect, useId } from 'react'
+import { useFieldArray, useForm, useWatch, type FieldPath } from 'react-hook-form'
+import { ErrorApi } from '../../api/problemas.ts'
 import { Boton } from '../../componentes/Boton.tsx'
 import { CampoSelect, CampoTexto } from '../../componentes/Campos.tsx'
 import { aTexto, calcularLinea, calcularTotales, type LineaNumerica } from '../../utilidades/importes.ts'
 import { formatearImporte } from '../../utilidades/formato.ts'
 import {
+  esCampoDelFormulario,
   esquemaFormulario,
   REGIMENES_IVA,
+  rutaDeCampo,
   TIPOS_FACTURA,
   TIPOS_IVA,
   valoresIniciales,
@@ -50,14 +53,17 @@ interface Propiedades {
   /** Recibe los valores ya validados y en formato de petición; la emisión la hace la página. */
   onEnviar: (valores: ValoresValidados) => void
   enviando?: boolean
+  /** Último error de la emisión. Los errores de campo se colocan junto a su campo; el resto lo muestra la página. */
+  errorServidor?: ErrorApi | null
 }
 
-export function FormularioEmision({ onEnviar, enviando = false }: Propiedades) {
+export function FormularioEmision({ onEnviar, enviando = false, errorServidor = null }: Propiedades) {
   const prefijo = useId()
   const {
     register,
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<ValoresFormulario>({
     resolver: zodResolver(esquemaFormulario),
@@ -66,6 +72,31 @@ export function FormularioEmision({ onEnviar, enviando = false }: Propiedades) {
   const { fields, append, remove } = useFieldArray({ control, name: 'lineas' })
   const lineas = useWatch({ control, name: 'lineas' })
   const totales = calcularTotales(lineas.map(aNumerica))
+
+  // Errores del servidor junto a su campo. Un 409 se marca en serie y número; un 400 en cada campo que el formulario reconoce.
+  useEffect(() => {
+    if (!errorServidor) return
+    const { detalle } = errorServidor
+    if (detalle.tipo === 'validacion') {
+      for (const [clave, mensaje] of Object.entries(detalle.campos)) {
+        if (esCampoDelFormulario(clave)) setError(rutaDeCampo(clave) as FieldPath<ValoresFormulario>, { type: 'server', message: mensaje })
+      }
+    }
+    if (detalle.tipo === 'conflicto') {
+      setError('serie', { type: 'server', message: detalle.mensaje })
+      setError('numero', { type: 'server', message: detalle.mensaje })
+    }
+  }, [errorServidor, setError])
+
+  // Mientras la AEAT responde, cerrar o recargar la pestaña avisa: la factura podría quedar a medias
+  useEffect(() => {
+    if (!enviando) return
+    const avisar = (evento: BeforeUnloadEvent) => {
+      evento.preventDefault()
+    }
+    window.addEventListener('beforeunload', avisar)
+    return () => window.removeEventListener('beforeunload', avisar)
+  }, [enviando])
 
   const enviar = handleSubmit((valores) => {
     if (enviando) return

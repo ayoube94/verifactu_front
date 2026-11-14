@@ -28,10 +28,10 @@
 
 ## 4. Envío y errores del servidor
 
-- [ ] 4.1 Crear la mutación de emisión (D4): botón «Emitiendo…» ocupado, mensaje `aria-live` de espera, guarda contra el doble envío y aviso al abandonar con `beforeunload` y `useBlocker`. Se verifica con tests MSW: doble pulsación con una sola petición, y que se envía `tipoIva` en cada línea
-- [ ] 4.2 Crear `rutaDeCampo()` y aplicar los 400 del backend con `setError` (D5), con las claves desconocidas al mensaje general. Se verifica con tests de `serie`, `cliente.nif` y `lineas[1].cantidad`
-- [ ] 4.3 Mostrar el 409 junto a serie y número y los 5xx con `errorId`, conservando los datos. Se verifica con tests MSW de 409 y 500 (una sola petición, datos intactos)
-- [ ] 4.4 Ante un fallo sin respuesta en la emisión, mostrar «No se sabe si la factura se emitió: compruébalo antes de reintentar», sin botón de reintento (D7, antes del backend). Se verifica con un test MSW con `HttpResponse.error()`
+- [x] 4.1 Crear la mutación de emisión (D4): botón «Emitiendo…» ocupado, mensaje `aria-live` de espera, guarda contra el doble envío y aviso al abandonar con `beforeunload` y `useBlocker`. Se verifica con tests MSW: doble pulsación con una sola petición, y que se envía `tipoIva` en cada línea
+- [x] 4.2 Crear `rutaDeCampo()` y aplicar los 400 del backend con `setError` (D5), con las claves desconocidas al mensaje general. Se verifica con tests de `serie`, `cliente.nif` y `lineas[1].cantidad`
+- [x] 4.3 Mostrar el 409 junto a serie y número y los 5xx con `errorId`, conservando los datos. Se verifica con tests MSW de 409 y 500 (una sola petición, datos intactos)
+- [x] 4.4 Ante un fallo sin respuesta en la emisión, mostrar «No se sabe si la factura se emitió: compruébalo antes de reintentar», sin botón de reintento (D7, antes del backend). Se verifica con un test MSW con `HttpResponse.error()`
 
 ## 5. Resultado
 

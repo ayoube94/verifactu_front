@@ -138,3 +138,18 @@ export function aPeticion(valores: ValoresValidados): FacturaCreate {
     })),
   }
 }
+
+/** Clave de error del backend (`lineas[1].cantidad`) a ruta del formulario (`lineas.1.cantidad`). */
+export function rutaDeCampo(clave: string): string {
+  return clave.replace(/\[(\d+)\]/g, '.$1')
+}
+
+const CAMPO_CABECERA = /^(serie|numero|fechaExpedicion|tipoFactura|regimenIva|descripcionOperacion)$/
+const CAMPO_CLIENTE = /^cliente\.(nif|nombreRazonSocial|direccion|codigoPostal|ciudad|pais)$/
+const CAMPO_LINEA = /^lineas\.\d+\.(descripcion|cantidad|precioUnitario|descuento|tipoIva)$/
+
+/** Indica si una clave del backend corresponde a un campo de este formulario. Lo que no encaja va al mensaje general. */
+export function esCampoDelFormulario(clave: string): boolean {
+  const ruta = rutaDeCampo(clave)
+  return CAMPO_CABECERA.test(ruta) || CAMPO_CLIENTE.test(ruta) || CAMPO_LINEA.test(ruta)
+}
