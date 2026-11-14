@@ -2,8 +2,8 @@
 
 ## 1. Ruta y navegación
 
-- [ ] 1.1 Añadir la ruta `/facturas/nueva` con una página vacía `EmitirFactura` (título «Emitir factura · Zefact») y la sección «Emitir factura» en `src/app/secciones.ts`. Se verifica con un test de que la navegación muestra «Inicio» y «Emitir factura» y marca la activa
-- [ ] 1.2 En la página de inicio, convertir «Emitir factura» en enlace a `/facturas/nueva` (las otras dos siguen como «Próxima fase»). Se verifica con un test de que el enlace existe y navega
+- [x] 1.1 Añadir la ruta `/facturas/nueva` con una página vacía `EmitirFactura` (título «Emitir factura · Zefact») y la sección «Emitir factura» en `src/app/secciones.ts`. Se verifica con un test de que la navegación muestra «Inicio» y «Emitir factura» y marca la activa
+- [x] 1.2 En la página de inicio, convertir «Emitir factura» en enlace a `/facturas/nueva` (las otras dos siguen como «Próxima fase»). Se verifica con un test de que el enlace existe y navega
 
 ## 2. Dominio: importes y modelo del formulario
 
