@@ -7,15 +7,15 @@
 
 ## 2. Dominio: importes y modelo del formulario
 
-- [ ] 2.1 Crear `src/utilidades/importes.ts` con aritmética decimal en `BigInt`: parseo con coma o punto, `calcularLinea` (base y cuota HALF_UP 2, factor a escala 4) y `calcularTotales`. Se verifica con tests: los ejemplos del spec (`1.450,00 €`, `304,50 €`, `1.754,50 €`; `3 × 0,35` da base `1,05` y cuota `0,22`) y casos frontera HALF_UP, y un precio de 4 decimales (`3 × 0,3333` da base `1,00`)
-- [ ] 2.2 Instalar `react-hook-form`, `zod` y `@hookform/resolvers`. Crear `src/paginas/emitir/esquema.ts` con el esquema Zod:
+- [x] 2.1 Crear `src/utilidades/importes.ts` con aritmética decimal en `BigInt`: parseo con coma o punto, `calcularLinea` (base y cuota HALF_UP 2, factor a escala 4) y `calcularTotales`. Se verifica con tests: los ejemplos del spec (`1.450,00 €`, `304,50 €`, `1.754,50 €`; `3 × 0,35` da base `1,05` y cuota `0,22`) y casos frontera HALF_UP, y un precio de 4 decimales (`3 × 0,3333` da base `1,00`)
+- [x] 2.2 Instalar `react-hook-form`, `zod` y `@hookform/resolvers`. Crear `src/paginas/emitir/esquema.ts` con el esquema Zod:
   - reglas y mensajes copiados del backend;
   - decimales máximos por campo como el backend (cantidad y precio 4; descuento e IVA 2);
   - destinatario obligatorio salvo F2 y R5;
   - valores iniciales con la fecha de hoy en Madrid.
 
   Crear también `aPeticion()`, que construye el `FacturaCreateDto` con `tipoIva` numérico siempre y sin `cliente` si está vacío en una simplificada. Se verifica con tests por cada regla del spec y de `aPeticion()`
-- [ ] 2.3 Crear `src/dominio/estadoEnvio.ts`, el mapa de `EstadoEnvio` a texto y tono (D6). Se verifica con un test que cubre los seis estados y que solo `ACEPTADO` es éxito
+- [x] 2.3 Crear `src/dominio/estadoEnvio.ts`, el mapa de `EstadoEnvio` a texto y tono (D6). Se verifica con un test que cubre los seis estados y que solo `ACEPTADO` es éxito
 
 ## 3. Formulario
 
