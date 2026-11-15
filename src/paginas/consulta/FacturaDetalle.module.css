@@ -113,6 +113,11 @@
   gap: var(--espacio-3);
 }
 
+/* Estado de carga: <output> es una región en vivo (role status) y necesita bloque para el mismo aspecto que un párrafo */
+.estado {
+  display: block;
+}
+
 .noEncontrada {
   display: grid;
   gap: var(--espacio-3);

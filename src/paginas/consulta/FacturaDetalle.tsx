@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router'
 import { ErrorApi } from '../../api/problemas.ts'
 import { useTituloPagina } from '../../app/useTituloPagina.ts'
@@ -30,7 +31,8 @@ function FacturaCargada({ id }: { id: number }) {
     return (
       <section className={estilos.pagina} aria-busy="true">
         <h1 className={estilos.titulo}>Factura</h1>
-        <p className={estilos.entrada}>Cargando la factura…</p>
+        {/* Región en vivo: el lector anuncia que la factura se está cargando */}
+        <output className={[estilos.entrada, vista.estado].join(' ')}>Cargando la factura…</output>
       </section>
     )
   }
@@ -152,9 +154,16 @@ function FacturaCargada({ id }: { id: number }) {
 
 function NoEncontrada({ id }: { id: string }) {
   useTituloPagina('Factura no encontrada')
+  // El cambio de pantalla no se anuncia por sí solo: el foco va al encabezado para que el lector lo lea
+  const encabezado = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    encabezado.current?.focus()
+  }, [])
   return (
     <section className={[estilos.pagina, vista.noEncontrada].join(' ')}>
-      <h1 className={estilos.titulo}>Factura no encontrada</h1>
+      <h1 ref={encabezado} tabIndex={-1} className={estilos.titulo}>
+        Factura no encontrada
+      </h1>
       <p>No existe ninguna factura con el id {id}.</p>
       <Link to="/consultar">Consultar otra factura</Link>
     </section>

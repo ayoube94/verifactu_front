@@ -133,6 +133,8 @@ describe('vista de factura /facturas/:id', () => {
     servidor.use(http.get('/api/v1/facturas/:id', () => HttpResponse.json({ detail: 'No encontrada' }, { status: 404 })))
     renderizarRuta('/facturas/42')
     expect(await screen.findByText('No existe ninguna factura con el id 42.')).toBeInTheDocument()
+    // El encabezado recibe el foco para que el lector anuncie que la factura no existe
+    expect(screen.getByRole('heading', { level: 1, name: 'Factura no encontrada' })).toHaveFocus()
     expect(screen.getByRole('link', { name: 'Consultar otra factura' })).toHaveAttribute('href', '/consultar')
   })
 
@@ -180,7 +182,9 @@ describe('vista de factura /facturas/:id', () => {
   test('mientras carga muestra el encabezado y el aviso de carga', async () => {
     servidor.use(http.get('/api/v1/facturas/:id', () => new Promise(() => undefined)))
     renderizarRuta('/facturas/42')
-    expect(await screen.findByText('Cargando la factura…')).toBeInTheDocument()
+    // Región en vivo: el lector anuncia la carga
+    // (la cabecera tiene su propio role="status" del servicio: se acota a la pantalla)
+    expect(await within(screen.getByRole('main')).findByRole('status')).toHaveTextContent('Cargando la factura…')
     await waitFor(() => expect(screen.getByRole('heading', { level: 1, name: 'Factura' })).toBeInTheDocument())
   })
 })
