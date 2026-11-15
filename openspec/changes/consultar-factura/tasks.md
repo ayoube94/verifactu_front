@@ -12,7 +12,7 @@
 
 ## 3. Vista de factura
 
-- [ ] 3.1 Crear la cabecera, el destinatario, la tabla de líneas (solo lectura, con base por línea) y el bloque de totales, con fechas `dd/mm/aaaa` y coma decimal. Se verifica con un test que carga la factura de ejemplo del spec y comprueba título, fechas, descuento en euros y totales
+- [x] 3.1 Crear la cabecera, el destinatario, la tabla de líneas (solo lectura, con base por línea) y el bloque de totales, con fechas `dd/mm/aaaa` y coma decimal. Se verifica con un test que carga la factura de ejemplo del spec y comprueba título, fechas, descuento en euros y totales
 - [x] 3.2 Crear `<BloqueVerifactu>` con estado AEAT (texto y tono de `estadoEnvio.ts`), código y mensaje de la AEAT, CSV solo con aceptación, huella completa en el DOM, huella anterior o «Primer registro de la cadena», fecha-hora de generación y QR. Se verifica con tests de `ACEPTADO`, `RECHAZADO` y de que `textContent` contiene la huella completa
 - [x] 3.3 Crear la descarga del XML como enlace `download` a `/api/v1/facturas/{id}/xml`. Se verifica con un test que comprueba el `href` y el atributo `download`. Si el XML falla, el navegador muestra su propio error (ver `design.md`)
 - [x] 3.4 Mostrar en la pantalla los estados de error del spec: id inexistente con enlace a `/consultar`, 500 con `errorId` y sin conexión con reintento. Se verifica con tests MSW de 404, 500 y `HttpResponse.error()`

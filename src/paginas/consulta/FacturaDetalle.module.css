@@ -1,8 +1,10 @@
+/* Ancho de contenido (como la emisión): la tabla de líneas necesita espacio para sus columnas */
 .factura {
   display: grid;
   gap: var(--espacio-5);
+  max-width: var(--ancho-contenido);
+  min-width: 0;
 }
-
 .cabecera {
   display: grid;
   gap: var(--espacio-3);
@@ -47,6 +49,7 @@
 
 .lineas .numero {
   text-align: right;
+  white-space: nowrap;
 }
 
 /* Leyenda solo para lectores de pantalla */

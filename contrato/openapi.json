@@ -13,6 +13,143 @@
   ],
   "paths": {
     "/api/v1/facturas": {
+      "get": {
+        "tags": [
+          "factura-controller"
+        ],
+        "summary": "Listar facturas con paginación y filtros",
+        "description": "Orden fijo: fechaExpedicion descendente y después id descendente. Los filtros se combinan con AND; fechaDesde y fechaHasta son inclusivos.",
+        "operationId": "listarFacturas",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Página, empezando en 0",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Elementos por página (1 a 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "serie",
+            "in": "query",
+            "description": "Serie exacta",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "numero",
+            "in": "query",
+            "description": "Número exacto",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nifCliente",
+            "in": "query",
+            "description": "NIF del cliente",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "description": "Fecha de expedición desde (inclusive), AAAA-MM-DD",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "description": "Fecha de expedición hasta (inclusive), AAAA-MM-DD",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "estadoEnvio",
+            "in": "query",
+            "description": "Estado del envío a la AEAT",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Estado del envío a la AEAT. Una emisión puede devolver 201 con RECHAZADO o ERROR_CONEXION: la factura queda creada pero no aceptada. Solo ACEPTADO y ACEPTADO_CON_ERRORES indican aceptación.",
+              "enum": [
+                "PENDIENTE",
+                "ENVIADO",
+                "ACEPTADO",
+                "ACEPTADO_CON_ERRORES",
+                "RECHAZADO",
+                "ERROR_CONEXION"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de facturas (resumen, sin líneas ni QR)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaFacturasDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetro no válido, por ejemplo size mayor que 100. 'errores' indica cada parámetro.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemaValidacion"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Falta la cabecera X-API-Key o la clave no es válida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-API-Key": []
+          }
+        ]
+      },
       "post": {
         "tags": [
           "factura-controller"
@@ -561,11 +698,48 @@
           "lineas": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LineaFacturaDto"
+              "$ref": "#/components/schemas/LineaFacturaRespuestaDto"
             }
           },
           "verifactu": {
             "$ref": "#/components/schemas/RegistroVerifactuDto"
+          }
+        }
+      },
+      "LineaFacturaRespuestaDto": {
+        "type": "object",
+        "description": "Línea de factura con los importes calculados por el servidor",
+        "properties": {
+          "posicion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "precioUnitario": {
+            "type": "number"
+          },
+          "descuento": {
+            "type": "number"
+          },
+          "tipoIva": {
+            "type": "number"
+          },
+          "baseImponible": {
+            "type": "number",
+            "description": "Base imponible de la línea: cantidad × precio − descuento, a 2 decimales"
+          },
+          "cuotaIva": {
+            "type": "number",
+            "description": "Cuota de IVA de la línea: base × tipoIva / 100, a 2 decimales"
+          },
+          "importeTotal": {
+            "type": "number",
+            "description": "Importe de la línea: base + cuota, a 2 decimales"
           }
         }
       },
@@ -697,6 +871,87 @@
           "errorId": {
             "type": "string",
             "description": "Identificador del error para buscarlo en el log del servidor"
+          }
+        }
+      },
+      "FacturaResumenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "numSerieFactura": {
+            "type": "string"
+          },
+          "fechaExpedicion": {
+            "type": "string",
+            "format": "date"
+          },
+          "tipoFactura": {
+            "type": "string",
+            "description": "Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.",
+            "enum": [
+              "F1",
+              "F2",
+              "F3",
+              "R1",
+              "R2",
+              "R3",
+              "R4",
+              "R5"
+            ]
+          },
+          "clienteNif": {
+            "type": "string"
+          },
+          "clienteNombre": {
+            "type": "string"
+          },
+          "importeTotal": {
+            "type": "number"
+          },
+          "estadoEnvio": {
+            "type": "string",
+            "description": "Estado del envío a la AEAT. Una emisión puede devolver 201 con RECHAZADO o ERROR_CONEXION: la factura queda creada pero no aceptada. Solo ACEPTADO y ACEPTADO_CON_ERRORES indican aceptación.",
+            "enum": [
+              "PENDIENTE",
+              "ENVIADO",
+              "ACEPTADO",
+              "ACEPTADO_CON_ERRORES",
+              "RECHAZADO",
+              "ERROR_CONEXION"
+            ]
+          },
+          "huella": {
+            "type": "string"
+          }
+        }
+      },
+      "PaginaFacturasDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacturaResumenDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

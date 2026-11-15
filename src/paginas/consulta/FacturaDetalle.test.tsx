@@ -24,7 +24,9 @@ function factura(estadoEnvio: string, extra: Record<string, unknown> = {}) {
     cuotaTotal: 210,
     importeTotal: 1210,
     cliente: { nif: 'A98765432', nombreRazonSocial: 'EMPRESA CLIENTE S.A.', pais: 'ES' },
-    lineas: [{ posicion: 1, descripcion: 'Auditoría', cantidad: 1, precioUnitario: 1000, descuento: 0, tipoIva: 21 }],
+    lineas: [
+      { posicion: 1, descripcion: 'Auditoría', cantidad: 1, precioUnitario: 1000, descuento: 0, tipoIva: 21, baseImponible: 1000, cuotaIva: 210, importeTotal: 1210 },
+    ],
     verifactu: {
       id: 7,
       huella: HUELLA,
@@ -55,8 +57,12 @@ describe('vista de factura /facturas/:id', () => {
 
     const lineas = screen.getByRole('table', { name: 'Líneas de la factura' })
     expect(within(lineas).getByText('Auditoría')).toBeInTheDocument()
-    expect(within(lineas).getByText('1.000,00 €')).toBeInTheDocument()
     expect(within(lineas).getByText('21 %')).toBeInTheDocument()
+    const fila = within(lineas).getAllByRole('row')[1]
+    expect(within(fila).getByText('1.000,00 €', { selector: '[data-etiqueta="Precio unitario"]' })).toBeInTheDocument()
+    expect(within(fila).getByText('1.000,00 €', { selector: '[data-etiqueta="Base"]' })).toBeInTheDocument()
+    expect(within(fila).getByText('210,00 €', { selector: '[data-etiqueta="Cuota"]' })).toBeInTheDocument()
+    expect(within(fila).getByText('1.210,00 €', { selector: '[data-etiqueta="Importe"]' })).toBeInTheDocument()
 
     expect(screen.getByText('Aceptada por la AEAT')).toBeInTheDocument()
     expect(screen.getByText('A1B2C3D4E5F6G7H8')).toBeInTheDocument()
@@ -65,6 +71,21 @@ describe('vista de factura /facturas/:id', () => {
     const xml = screen.getByRole('link', { name: 'Descargar XML' })
     expect(xml).toHaveAttribute('href', '/api/v1/facturas/42/xml')
     expect(xml).toHaveAttribute('download')
+  })
+
+  test('muestra los importes de cada línea tal como los calcula el servidor, sin recalcularlos', async () => {
+    // Un redondeo distinto al de la fórmula local: el frontal debe mostrar el valor de la API
+    servirFactura(
+      factura('ACEPTADO', {
+        lineas: [{ posicion: 1, descripcion: 'Informe', cantidad: 3, precioUnitario: 0.3333, descuento: 0, tipoIva: 10, baseImponible: 1.0, cuotaIva: 0.1, importeTotal: 1.1 }],
+      }),
+    )
+    renderizarRuta('/facturas/42')
+    const lineas = await screen.findByRole('table', { name: 'Líneas de la factura' })
+    const fila = within(lineas).getAllByRole('row')[1]
+    expect(within(fila).getByText('1,00 €', { selector: '[data-etiqueta="Base"]' })).toBeInTheDocument()
+    expect(within(fila).getByText('0,10 €', { selector: '[data-etiqueta="Cuota"]' })).toBeInTheDocument()
+    expect(within(fila).getByText('1,10 €', { selector: '[data-etiqueta="Importe"]' })).toBeInTheDocument()
   })
 
   test('la huella y la huella anterior aparecen completas en el texto de la página', async () => {

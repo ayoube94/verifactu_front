@@ -11,7 +11,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Listar facturas con paginación y filtros
+         * @description Orden fijo: fechaExpedicion descendente y después id descendente. Los filtros se combinan con AND; fechaDesde y fechaHasta son inclusivos.
+         */
+        get: operations["listarFacturas"];
         put?: never;
         /**
          * Emitir una factura
@@ -164,8 +168,24 @@ export interface components {
             cuotaTotal?: number;
             importeTotal?: number;
             cliente?: components["schemas"]["ClienteDto"];
-            lineas?: components["schemas"]["LineaFacturaDto"][];
+            lineas?: components["schemas"]["LineaFacturaRespuestaDto"][];
             verifactu?: components["schemas"]["RegistroVerifactuDto"];
+        };
+        /** @description Línea de factura con los importes calculados por el servidor */
+        LineaFacturaRespuestaDto: {
+            /** Format: int32 */
+            posicion?: number;
+            descripcion?: string;
+            cantidad?: number;
+            precioUnitario?: number;
+            descuento?: number;
+            tipoIva?: number;
+            /** @description Base imponible de la línea: cantidad × precio − descuento, a 2 decimales */
+            baseImponible?: number;
+            /** @description Cuota de IVA de la línea: base × tipoIva / 100, a 2 decimales */
+            cuotaIva?: number;
+            /** @description Importe de la línea: base + cuota, a 2 decimales */
+            importeTotal?: number;
         };
         RegistroVerifactuDto: {
             /** Format: int64 */
@@ -224,6 +244,38 @@ export interface components {
             /** @description Identificador del error para buscarlo en el log del servidor */
             errorId?: string;
         };
+        FacturaResumenDto: {
+            /** Format: int64 */
+            id?: number;
+            numSerieFactura?: string;
+            /** Format: date */
+            fechaExpedicion?: string;
+            /**
+             * @description Tipo de factura. F1 ordinaria, F2 simplificada, F3 sustitución de simplificadas; R1 a R4 rectificativas, R5 rectificativa sobre simplificadas.
+             * @enum {string}
+             */
+            tipoFactura?: "F1" | "F2" | "F3" | "R1" | "R2" | "R3" | "R4" | "R5";
+            clienteNif?: string;
+            clienteNombre?: string;
+            importeTotal?: number;
+            /**
+             * @description Estado del envío a la AEAT. Una emisión puede devolver 201 con RECHAZADO o ERROR_CONEXION: la factura queda creada pero no aceptada. Solo ACEPTADO y ACEPTADO_CON_ERRORES indican aceptación.
+             * @enum {string}
+             */
+            estadoEnvio?: "PENDIENTE" | "ENVIADO" | "ACEPTADO" | "ACEPTADO_CON_ERRORES" | "RECHAZADO" | "ERROR_CONEXION";
+            huella?: string;
+        };
+        PaginaFacturasDto: {
+            content?: components["schemas"]["FacturaResumenDto"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
         ProblemDetail: {
             /** Format: uri */
             type?: string;
@@ -261,6 +313,61 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listarFacturas: {
+        parameters: {
+            query?: {
+                /** @description Página, empezando en 0 */
+                page?: number;
+                /** @description Elementos por página (1 a 100) */
+                size?: number;
+                /** @description Serie exacta */
+                serie?: string;
+                /** @description Número exacto */
+                numero?: string;
+                /** @description NIF del cliente */
+                nifCliente?: string;
+                /** @description Fecha de expedición desde (inclusive), AAAA-MM-DD */
+                fechaDesde?: string;
+                /** @description Fecha de expedición hasta (inclusive), AAAA-MM-DD */
+                fechaHasta?: string;
+                /** @description Estado del envío a la AEAT */
+                estadoEnvio?: "PENDIENTE" | "ENVIADO" | "ACEPTADO" | "ACEPTADO_CON_ERRORES" | "RECHAZADO" | "ERROR_CONEXION";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Página de facturas (resumen, sin líneas ni QR) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginaFacturasDto"];
+                };
+            };
+            /** @description Parámetro no válido, por ejemplo size mayor que 100. 'errores' indica cada parámetro. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemaValidacion"];
+                };
+            };
+            /** @description Falta la cabecera X-API-Key o la clave no es válida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": Record<string, never>;
+                };
+            };
+        };
+    };
     emitirFactura: {
         parameters: {
             query?: never;

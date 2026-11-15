@@ -49,7 +49,7 @@ function FacturaCargada({ id }: { id: number }) {
 
   const factura = consulta.data
   return (
-    <section className={[estilos.pagina, vista.factura].join(' ')}>
+    <section className={vista.factura}>
       <h1 className={estilos.titulo}>{titulo}</h1>
 
       <dl className={vista.datos}>
@@ -92,6 +92,15 @@ function FacturaCargada({ id }: { id: number }) {
               <th scope="col" className={vista.numero}>
                 IVA
               </th>
+              <th scope="col" className={vista.numero}>
+                Base
+              </th>
+              <th scope="col" className={vista.numero}>
+                Cuota
+              </th>
+              <th scope="col" className={vista.numero}>
+                Importe
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -102,7 +111,7 @@ function FacturaCargada({ id }: { id: number }) {
                 </td>
                 <td data-etiqueta="Descripción">{linea.descripcion}</td>
                 <td className={vista.numero} data-etiqueta="Cantidad">
-                  {linea.cantidad.toLocaleString('es-ES', { maximumFractionDigits: 4 })}
+                  {linea.cantidad?.toLocaleString('es-ES', { maximumFractionDigits: 4 }) ?? '—'}
                 </td>
                 <td className={vista.numero} data-etiqueta="Precio unitario">
                   {formatearImporte(linea.precioUnitario)}
@@ -111,7 +120,17 @@ function FacturaCargada({ id }: { id: number }) {
                   {formatearImporte(linea.descuento)}
                 </td>
                 <td className={vista.numero} data-etiqueta="IVA">
-                  {linea.tipoIva.toLocaleString('es-ES', { maximumFractionDigits: 2 })} %
+                  {linea.tipoIva === undefined ? '—' : `${linea.tipoIva.toLocaleString('es-ES', { maximumFractionDigits: 2 })} %`}
+                </td>
+                {/* Importes calculados por el backend (LineaFacturaRespuestaDto): el frontal no recalcula */}
+                <td className={vista.numero} data-etiqueta="Base">
+                  {formatearImporte(linea.baseImponible)}
+                </td>
+                <td className={vista.numero} data-etiqueta="Cuota">
+                  {formatearImporte(linea.cuotaIva)}
+                </td>
+                <td className={vista.numero} data-etiqueta="Importe">
+                  {formatearImporte(linea.importeTotal)}
                 </td>
               </tr>
             ))}
