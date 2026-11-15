@@ -27,4 +27,4 @@
 
 - [x] 5.1 Añadir un escenario E2E en `playwright` que consulte una factura emitida desde el formulario de emisión, compruebe el bloque VeriFactu y el enlace del XML, y verifique la huella devuelta. Se verifica con `npm run test:e2e` en verde
 - [x] 5.2 Pasar `npm run lint`, `npm run typecheck`, `npm test` y `npx impeccable detect` sobre las pantallas nuevas, y corregir los hallazgos. Se verifica con los cuatro comandos sin errores
-- [ ] 5.3 Revisar las pantallas nuevas con `/impeccable critique` y `/impeccable audit` a 360 px y con teclado, y corregir los P0 y P1. Se verifica con el informe sin P0 ni P1 abiertos
+- [x] 5.3 Revisar las pantallas nuevas con `/impeccable critique` y `/impeccable audit` a 360 px y con teclado, y corregir los P0 y P1. Se verifica con el informe sin P0 ni P1 abiertos
