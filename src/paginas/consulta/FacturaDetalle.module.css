@@ -1,0 +1,117 @@
+.factura {
+  display: grid;
+  gap: var(--espacio-5);
+}
+
+.cabecera {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+.datos {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: var(--filete-fuerte);
+}
+
+.datos > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  padding: var(--espacio-2) 0;
+  border-bottom: var(--filete);
+}
+
+.datos dt,
+.datos dd {
+  margin: 0;
+}
+
+.tablaScroll {
+  overflow-x: auto;
+}
+
+.lineas {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.lineas th,
+.lineas td {
+  padding: var(--espacio-2) var(--espacio-3);
+  border-bottom: var(--filete);
+  text-align: left;
+}
+
+.lineas .numero {
+  text-align: right;
+}
+
+/* Leyenda solo para lectores de pantalla */
+.oculta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Móvil: cada línea se apila como bloque con la etiqueta de cada dato; sin desplazamiento horizontal */
+@media (max-width: 480px) {
+  .tablaScroll {
+    overflow-x: visible;
+  }
+
+  .lineas,
+  .lineas tbody,
+  .lineas tr,
+  .lineas td {
+    display: block;
+  }
+
+  .lineas thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .lineas tr {
+    padding: var(--espacio-2) 0;
+    border-bottom: var(--filete);
+  }
+
+  .lineas td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--espacio-3);
+    padding: var(--espacio-1) var(--espacio-3);
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  .lineas td::before {
+    content: attr(data-etiqueta);
+    color: var(--color-texto-sec);
+  }
+
+  .lineas .numero {
+    text-align: left;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.noEncontrada {
+  display: grid;
+  gap: var(--espacio-3);
+  justify-items: start;
+}

@@ -1,0 +1,12 @@
+.formulario {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) auto;
+  gap: var(--espacio-3);
+  align-items: end;
+}
+
+@media (max-width: 360px) {
+  .formulario {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -6,6 +6,8 @@ import estilos from './RegistroEmitido.module.css'
 
 interface Propiedades {
   factura: FacturaEmitida
+  /** La pantalla ya tiene su propio título (la vista de factura): no repetir el número. */
+  sinNumero?: boolean
 }
 
 /** Imagen del QR: el backend lo devuelve en base64, con o sin el prefijo data:. */
@@ -15,18 +17,24 @@ const srcQr = (qr: string) => (qr.startsWith('data:') ? qr : `data:image/png;bas
  * Resultado de una emisión: estado ante la AEAT en palabras, datos del registro y encadenamiento.
  * Se reutiliza en la fase 3 (/facturas/:id).
  */
-export function RegistroEmitido({ factura }: Propiedades) {
+export function RegistroEmitido({ factura, sinNumero = false }: Propiedades) {
   const v = factura.verifactu
   const estado = presentarEstado(v?.estadoEnvio as EstadoEnvio)
   const incidencia = estado.tono === 'incidencia' || estado.tono === 'aviso'
   const rechazada = v?.estadoEnvio === 'RECHAZADO'
 
   return (
-    <article className={estilos.registro} aria-labelledby="titulo-registro">
+    <article
+      className={estilos.registro}
+      aria-labelledby={sinNumero ? undefined : 'titulo-registro'}
+      aria-label={sinNumero ? 'Registro VeriFactu' : undefined}
+    >
       <header className={estilos.cabecera}>
-        <h2 id="titulo-registro" className={estilos.numero}>
-          Factura {factura.numSerieFactura}
-        </h2>
+        {!sinNumero && (
+          <h2 id="titulo-registro" className={estilos.numero}>
+            Factura {factura.numSerieFactura}
+          </h2>
+        )}
         <p className={estilos.estado} data-tono={estado.tono} role={incidencia ? 'alert' : undefined}>
           {estado.texto}
         </p>

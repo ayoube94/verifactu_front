@@ -6,24 +6,21 @@ import { renderizarRuta } from '../pruebas/renderizar.tsx'
 import { servidor } from '../pruebas/servidor.ts'
 
 describe('página de inicio', () => {
-  test('explica para qué sirve; solo Emitir factura es enlace y el resto anuncia la fase', () => {
+  test('explica para qué sirve y cada operación es enlace a su pantalla', () => {
     renderizarRuta('/')
 
     const principal = screen.getByRole('main')
     expect(within(principal).getByRole('heading', { level: 1, name: 'Facturación VeriFactu' })).toBeInTheDocument()
     expect(within(principal).getByRole('link', { name: 'Emitir factura' })).toHaveAttribute('href', '/facturas/nueva')
-    for (const operacion of ['Consultar factura', 'Verificar huella']) {
-      expect(within(principal).getByText(operacion)).toBeInTheDocument()
-      // Aún no existen: se nombran, pero no son enlaces
-      expect(within(principal).queryByRole('link', { name: operacion })).not.toBeInTheDocument()
-    }
-    expect(within(principal).queryAllByRole('link')).toHaveLength(1)
+    expect(within(principal).getByRole('link', { name: 'Consultar factura' })).toHaveAttribute('href', '/consultar')
+    expect(within(principal).getByRole('link', { name: 'Verificar huella' })).toHaveAttribute('href', '/verificar-huella')
+    expect(within(principal).queryByText('Próxima fase')).not.toBeInTheDocument()
   })
 
   test('la navegación solo contiene secciones existentes', () => {
     renderizarRuta('/')
     const enlaces = within(screen.getByRole('navigation', { name: 'Principal' })).getAllByRole('link')
-    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio', 'Emitir factura'])
+    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio', 'Emitir factura', 'Consultar factura', 'Verificar huella'])
   })
 
   test('muestra el servicio operativo', async () => {
