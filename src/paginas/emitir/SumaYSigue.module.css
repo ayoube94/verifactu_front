@@ -37,12 +37,14 @@
 .huella {
   font-family: var(--fuente-datos);
   font-size: var(--texto-pequeno);
-  word-break: break-all;
   color: var(--color-texto);
 }
 
-/* Separación visual cada 4 caracteres; el texto copiado no lleva espacios */
+/* Separación visual cada 4 caracteres; el texto copiado no lleva espacios.
+   Un grupo nunca se parte: la línea solo corta entre grupos. */
 .grupo {
+  display: inline-block;
+  white-space: nowrap;
   margin-right: 0.35em;
 }
 

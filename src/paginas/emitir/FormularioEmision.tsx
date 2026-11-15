@@ -17,6 +17,7 @@ import {
   type ValoresFormulario,
   type ValoresValidados,
 } from './esquema.ts'
+import { CODIGO_REGIMEN, DESCRIPCION_TIPO } from './etiquetas.ts'
 import estilos from './FormularioEmision.module.css'
 
 /** Pasa una línea del formulario (nombres de campo de la API) a la forma numérica de importes. */
@@ -26,28 +27,6 @@ const aNumerica = (l: ValoresFormulario['lineas'][number]): LineaNumerica => ({
   descuento: l.descuento,
   tipo: l.tipoIva,
 })
-
-const DESCRIPCION_TIPO: Record<(typeof TIPOS_FACTURA)[number], string> = {
-  F1: 'Factura ordinaria',
-  F2: 'Factura simplificada',
-  F3: 'Factura emitida en sustitución de simplificadas',
-  R1: 'Rectificativa por error fundado en derecho',
-  R2: 'Rectificativa por modificación de base imponible',
-  R3: 'Rectificativa por bonificaciones posteriores',
-  R4: 'Rectificativa, resto de supuestos',
-  R5: 'Rectificativa en facturas simplificadas',
-}
-
-const CODIGO_REGIMEN: Record<(typeof REGIMENES_IVA)[number], string> = {
-  REGIMEN_GENERAL: '01 · Régimen general',
-  EXPORTACION: '02 · Exportación',
-  BIENES_USADOS: '03 · Bienes usados, objetos de arte y antigüedades',
-  ORO_INVERSION: '04 · Oro de inversión',
-  AGENCIAS_VIAJES: '05 · Agencias de viajes',
-  GRUPO_ENTIDADES: '06 · Grupo de entidades',
-  CRITERIO_CAJA: '07 · Criterio de caja',
-  SIMPLIFICADO: '08 · Recargo de equivalencia',
-}
 
 interface Propiedades {
   /** Recibe los valores ya validados y en formato de petición; la emisión la hace la página. */

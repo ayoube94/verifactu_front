@@ -4,7 +4,7 @@ import { Boton } from '../componentes/Boton.tsx'
 import { useTituloPagina } from '../app/useTituloPagina.ts'
 import estilos from './Inicio.module.css'
 
-/** Operaciones del frontal y la fase en que llegan (notes/plan-por-fases.md). Sin enlaces hasta que existan. */
+/** Operaciones del frontal, todas disponibles desde la fase 3 (notes/plan-por-fases.md). */
 const operaciones = [
   {
     nombre: 'Emitir factura',
@@ -14,12 +14,12 @@ const operaciones = [
   {
     nombre: 'Consultar factura',
     descripcion: 'Ver sus líneas, el estado ante la AEAT, el QR y descargar el XML enviado.',
-    ruta: null,
+    ruta: '/consultar',
   },
   {
     nombre: 'Verificar huella',
     descripcion: 'Comprobar que un registro no se ha alterado recalculando su huella.',
-    ruta: null,
+    ruta: '/verificar-huella',
   },
 ] as const
 
@@ -42,10 +42,10 @@ export function Inicio() {
           {operaciones.map((operacion) => (
             <li key={operacion.nombre} className={estilos.operacion}>
               <span className={estilos.nombre}>
-                {operacion.ruta ? <Link to={operacion.ruta}>{operacion.nombre}</Link> : operacion.nombre}
+                <Link to={operacion.ruta}>{operacion.nombre}</Link>
               </span>
               <span className={estilos.descripcion}>{operacion.descripcion}</span>
-              <span className={estilos.disponible}>{operacion.ruta ? 'Disponible' : 'Próxima fase'}</span>
+              <span className={estilos.disponible}>Disponible</span>
             </li>
           ))}
         </ul>
