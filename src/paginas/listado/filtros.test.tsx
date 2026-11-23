@@ -89,6 +89,8 @@ describe('filtros del listado', () => {
     const desde = screen.getByLabelText('Fecha desde')
     expect(desde).toHaveAccessibleDescription('La fecha desde no puede ser posterior a la fecha hasta')
     expect(desde).toBeInvalid()
+    // El foco va al campo con error: así un lector de pantalla lo anuncia con su descripción
+    expect(desde).toHaveFocus()
     expect(peticiones).toHaveLength(1)
   })
 

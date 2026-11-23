@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { Boton } from '../../componentes/Boton.tsx'
 import { CampoSelect, CampoTexto } from '../../componentes/Campos.tsx'
 import { ESTADOS_ENVIO, presentarEstado } from '../../dominio/estadoEnvio.ts'
@@ -23,6 +23,7 @@ const hayValores = (valores: ValoresFiltros) => CAMPOS_FILTRO.some((campo) => va
 export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: Propiedades) {
   const [valores, setValores] = useState<ValoresFiltros>(inicial)
   const [errorRango, setErrorRango] = useState<string>()
+  const campoDesde = useRef<HTMLInputElement>(null)
 
   const cambiar = (campo: CampoFiltro) => (evento: { target: { value: string } }) => {
     setValores((anteriores) => ({ ...anteriores, [campo]: evento.target.value }))
@@ -34,6 +35,8 @@ export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: P
     // Las fechas ISO ordenan igual como texto que como fechas
     if (valores.fechaDesde && valores.fechaHasta && valores.fechaDesde > valores.fechaHasta) {
       setErrorRango(MENSAJE_RANGO)
+      // Al enfocar el campo se anuncia su error (aria-describedby), como en el resto de formularios
+      campoDesde.current?.focus()
       return
     }
     setErrorRango(undefined)
@@ -48,8 +51,8 @@ export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: P
 
   return (
     <form className={estilos.filtros} noValidate onSubmit={enviar} aria-label="Filtros de facturas">
-      <CampoTexto id="filtro-serie" etiqueta="Serie" autoComplete="off" value={valores.serie} onChange={cambiar('serie')} error={errores.serie} />
-      <CampoTexto id="filtro-numero" etiqueta="Número" autoComplete="off" value={valores.numero} onChange={cambiar('numero')} error={errores.numero} />
+      <CampoTexto id="filtro-serie" etiqueta="Serie" className={estilos.mitad} autoComplete="off" value={valores.serie} onChange={cambiar('serie')} error={errores.serie} />
+      <CampoTexto id="filtro-numero" etiqueta="Número" className={estilos.mitad} autoComplete="off" value={valores.numero} onChange={cambiar('numero')} error={errores.numero} />
       <CampoTexto
         id="filtro-nif"
         etiqueta="NIF del cliente"
@@ -60,6 +63,7 @@ export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: P
       />
       <CampoTexto
         id="filtro-desde"
+        ref={campoDesde}
         etiqueta="Fecha desde"
         type="date"
         value={valores.fechaDesde}
