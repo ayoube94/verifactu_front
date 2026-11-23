@@ -2,17 +2,17 @@
 
 ## 1. Contrato, ruta y navegación
 
-- [ ] 1.1 Ejecutar `npm run api:sync && npm run api:types` y comprobar que `GET /api/v1/facturas`, `FacturaResumenDto` y `PaginaFacturasDto` siguen como en el spec. Se verifica con `npm run api:check` en verde y sin diferencias en `contrato/openapi.json` (o, si las hay, con el spec corregido antes de seguir)
-- [ ] 1.2 Añadir la ruta `/facturas` con una página vacía `ListadoFacturas` (título «Facturas · Zefact») y la sección «Facturas» en `src/app/secciones.ts`, tras «Inicio». Se verifica con un test de que la navegación muestra «Facturas» marcada como activa en `/facturas`, y de que `/facturas/nueva` y `/facturas/42` siguen mostrando la emisión y la factura
-- [ ] 1.3 Añadir «Listar facturas» a las operaciones de la página de inicio como enlace a `/facturas`. Se verifica con un test de que el enlace existe y navega
+- [x] 1.1 Ejecutar `npm run api:sync && npm run api:types` y comprobar que `GET /api/v1/facturas`, `FacturaResumenDto` y `PaginaFacturasDto` siguen como en el spec. Se verifica con `npm run api:check` en verde y sin diferencias en `contrato/openapi.json` (o, si las hay, con el spec corregido antes de seguir)
+- [x] 1.2 Añadir la ruta `/facturas` con una página vacía `ListadoFacturas` (título «Facturas · Zefact») y la sección «Facturas» en `src/app/secciones.ts`, tras «Inicio». Se verifica con un test de que la navegación muestra «Facturas» marcada como activa en `/facturas`, y de que `/facturas/nueva` y `/facturas/42` siguen mostrando la emisión y la factura
+- [x] 1.3 Añadir «Listar facturas» a las operaciones de la página de inicio como enlace a `/facturas`. Se verifica con un test de que el enlace existe y navega
 
 ## 2. Parámetros del listado
 
-- [ ] 2.1 Crear `leerParametros(query)` y `aQuery(parametros)` en `src/paginas/listado/listado.ts`: valores por defecto (`page` 0, `size` 20), descarte de `page` no válido, `size` fuera de 10/20/50/100, `estadoEnvio` desconocido y fechas mal formadas, `trim` de los textos y omisión de los vacíos, y URL solo con lo que difiere del defecto. Se verifica con tests unitarios de los escenarios «Campos vacíos» y «Valores de la URL no válidos» y de que `aQuery(leerParametros(q))` es estable
+- [x] 2.1 Crear `leerParametros(query)` y `aQuery(parametros)` en `src/paginas/listado/listado.ts`: valores por defecto (`page` 0, `size` 20), descarte de `page` no válido, `size` fuera de 10/20/50/100, `estadoEnvio` desconocido y fechas mal formadas, `trim` de los textos y omisión de los vacíos, y URL solo con lo que difiere del defecto. Se verifica con tests unitarios de los escenarios «Campos vacíos» y «Valores de la URL no válidos» y de que `aQuery(leerParametros(q))` es estable
 
 ## 3. Consulta de la página
 
-- [ ] 3.1 Crear `listarFacturas(parametros)` con los tipos generados y el hook `useListadoFacturas` (clave `['facturas', parametros]`, `keepPreviousData`, `retry: false`, `staleTime` 0, sin persistencia), mapeando 400, 500 y fallo de red con `src/api/problemas.ts`. Se verifica con tests MSW de 200 (la petición lleva exactamente los parámetros del spec), 400 con `errores`, 500 con `errorId` y `HttpResponse.error()`
+- [x] 3.1 Crear `listarFacturas(parametros)` con los tipos generados y el hook `useListadoFacturas` (clave `['facturas', parametros]`, `keepPreviousData`, `retry: false`, `staleTime` 0, sin persistencia), mapeando 400, 500 y fallo de red con `src/api/problemas.ts`. Se verifica con tests MSW de 200 (la petición lleva exactamente los parámetros del spec), 400 con `errores`, 500 con `errorId` y `HttpResponse.error()`
 
 ## 4. Filtros
 

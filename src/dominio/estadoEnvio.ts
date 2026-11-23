@@ -4,6 +4,9 @@
  */
 export type EstadoEnvio = 'PENDIENTE' | 'ENVIADO' | 'ACEPTADO' | 'ACEPTADO_CON_ERRORES' | 'RECHAZADO' | 'ERROR_CONEXION'
 
+/** Los seis estados, en el orden en que se ofrecen como filtro. */
+export const ESTADOS_ENVIO: readonly EstadoEnvio[] = ['PENDIENTE', 'ENVIADO', 'ACEPTADO', 'ACEPTADO_CON_ERRORES', 'RECHAZADO', 'ERROR_CONEXION']
+
 export type TonoEstado = 'exito' | 'aviso' | 'incidencia' | 'pendiente'
 
 export interface PresentacionEstado {

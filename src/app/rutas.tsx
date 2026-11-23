@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router'
 import { ConsultarFactura } from '../paginas/consulta/ConsultarFactura.tsx'
 import { FacturaDetalle } from '../paginas/consulta/FacturaDetalle.tsx'
 import { EmitirFactura } from '../paginas/emitir/EmitirFactura.tsx'
+import { ListadoFacturas } from '../paginas/listado/ListadoFacturas.tsx'
 import { Inicio } from '../paginas/Inicio.tsx'
 import { NoEncontrado } from '../paginas/NoEncontrado.tsx'
 import { VerificarHuella } from '../paginas/verificacion/VerificarHuella.tsx'
@@ -13,6 +14,7 @@ export const rutas: RouteObject[] = [
     element: <Armazon />,
     children: [
       { index: true, element: <Inicio /> },
+      { path: 'facturas', element: <ListadoFacturas /> },
       { path: 'facturas/nueva', element: <EmitirFactura /> },
       { path: 'consultar', element: <ConsultarFactura /> },
       { path: 'facturas/:id', element: <FacturaDetalle /> },
