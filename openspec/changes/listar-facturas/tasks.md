@@ -16,9 +16,9 @@
 
 ## 4. Filtros
 
-- [ ] 4.1 Crear el formulario de filtros (serie, número, NIF, fecha desde, fecha hasta y estado, con los textos de `estadoEnvio.ts`) con etiquetas visibles, «Filtrar» y «Quitar filtros», que escribe en la URL y vuelve a la página 0. Se verifica con tests de los escenarios «Aplicar un filtro», «Filtros combinados», «Quitar los filtros» y «Cambiar un filtro vuelve a la primera página»
-- [ ] 4.2 Validar que la fecha desde no sea posterior a la fecha hasta, con el mensaje junto al campo y sin petición, y repartir un 400 con `errores` a los filtros visibles (resto, a un mensaje general). Se verifica con tests del rango invertido y de un 400 sobre `fechaDesde` y sobre `size`
-- [ ] 4.3 Restaurar los filtros de la URL en el formulario al abrir `/facturas?...` y al volver atrás. Se verifica con un test que abre `/facturas?estadoEnvio=RECHAZADO&page=1` y comprueba el selector y la petición, y con otro de filtrar, abrir una factura y volver atrás
+- [x] 4.1 Crear el formulario de filtros (serie, número, NIF, fecha desde, fecha hasta y estado, con los textos de `estadoEnvio.ts`) con etiquetas visibles, «Filtrar» y «Quitar filtros», que escribe en la URL y vuelve a la página 0. Se verifica con tests de los escenarios «Aplicar un filtro», «Filtros combinados», «Quitar los filtros» y «Cambiar un filtro vuelve a la primera página»
+- [x] 4.2 Validar que la fecha desde no sea posterior a la fecha hasta, con el mensaje junto al campo y sin petición, y repartir un 400 con `errores` a los filtros visibles (resto, a un mensaje general). Se verifica con tests del rango invertido y de un 400 sobre `fechaDesde` y sobre `size`
+- [x] 4.3 Restaurar los filtros de la URL en el formulario al abrir `/facturas?...` y al volver atrás. Se verifica con un test que abre `/facturas?estadoEnvio=RECHAZADO&page=1` y comprueba el selector y la petición, y con otro de filtrar, abrir una factura y volver atrás
 
 ## 5. Tabla de facturas
 
