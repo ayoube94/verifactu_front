@@ -6,6 +6,7 @@ import estilos from '../Pagina.module.css'
 import { CAMPOS_FILTRO, FILTROS_VACIOS, FiltrosListado, type CampoFiltro, type ValoresFiltros } from './FiltrosListado.tsx'
 import { aQuery, leerParametros, type ParametrosListado } from './listado.ts'
 import formato from './ListadoFacturas.module.css'
+import { TablaFacturas } from './TablaFacturas.tsx'
 import { useListadoFacturas } from './useListadoFacturas.ts'
 
 const filtrosDe = (parametros: ParametrosListado): ValoresFiltros => ({
@@ -63,6 +64,7 @@ export function ListadoFacturas() {
           ))}
         </div>
       ) : null}
+      {consulta.data?.content?.length ? <TablaFacturas facturas={consulta.data.content} /> : null}
       {consulta.error && !validacion && <MensajeError error={consulta.error} onReintentar={() => void consulta.refetch()} />}
     </section>
   )

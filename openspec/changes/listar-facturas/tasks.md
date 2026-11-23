@@ -22,8 +22,8 @@
 
 ## 5. Tabla de facturas
 
-- [ ] 5.1 Crear la tabla con serie y número como enlace a `/facturas/:id`, fecha `dd/mm/aaaa`, tipo, cliente (nombre y NIF), importe con coma decimal y €, y estado con texto y tono, en el orden de la API. Se verifica con tests de la fila del spec (`2026/001`, `05/03/2026`, `1.210,00 €`), del enlace a `/facturas/42`, del estado `RECHAZADO` frente a `ACEPTADO` y de que el orden no se altera
-- [ ] 5.2 Maquetar el bloque apilado a 360 px con la etiqueta de cada dato y cifras tabulares en el importe, sin desplazamiento horizontal. Se verifica con `npm run build` y la revisión a 360 px de la tabla con nombres de cliente largos
+- [x] 5.1 Crear la tabla con serie y número como enlace a `/facturas/:id`, fecha `dd/mm/aaaa`, tipo, cliente (nombre y NIF), importe con coma decimal y €, y estado con texto y tono, en el orden de la API. Se verifica con tests de la fila del spec (`2026/001`, `05/03/2026`, `1.210,00 €`), del enlace a `/facturas/42`, del estado `RECHAZADO` frente a `ACEPTADO` y de que el orden no se altera
+- [x] 5.2 Maquetar el bloque apilado a 360 px con la etiqueta de cada dato y cifras tabulares en el importe, sin desplazamiento horizontal. Se verifica con `npm run build` y la revisión a 360 px de la tabla con nombres de cliente largos
 
 ## 6. Paginación y estados
 
