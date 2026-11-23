@@ -35,17 +35,13 @@
 .valor {
   display: block;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .secundario {
   display: block;
   font-size: var(--texto-pequeno);
   color: var(--color-texto-sec);
-}
-
-.cliente {
-  display: block;
-  overflow-wrap: anywhere;
 }
 
 /* El tono decide el color; el texto siempre lo dice */

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, test } from 'vitest'
@@ -58,7 +58,7 @@ describe('filtros del listado', () => {
     const { router } = renderizarRuta('/facturas?serie=A&estadoEnvio=RECHAZADO&page=2&size=50')
     await waitFor(() => expect(ultima(peticiones)).toEqual({ serie: 'A', estadoEnvio: 'RECHAZADO', page: '2', size: '50' }))
 
-    await userEvent.click(screen.getByRole('button', { name: 'Quitar filtros' }))
+    await userEvent.click(within(screen.getByRole('form', { name: 'Filtros de facturas' })).getByRole('button', { name: 'Quitar filtros' }))
 
     expect(screen.getByLabelText('Serie')).toHaveValue('')
     expect(screen.getByLabelText('Estado ante la AEAT')).toHaveValue('')

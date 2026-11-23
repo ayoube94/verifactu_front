@@ -2,22 +2,9 @@ import { useState, type FormEvent } from 'react'
 import { Boton } from '../../componentes/Boton.tsx'
 import { CampoSelect, CampoTexto } from '../../componentes/Campos.tsx'
 import { ESTADOS_ENVIO, presentarEstado } from '../../dominio/estadoEnvio.ts'
+import { CAMPOS_FILTRO, type CampoFiltro, type ValoresFiltros } from './valoresFiltros.ts'
+import { FILTROS_VACIOS } from './valoresFiltros.ts'
 import estilos from './FiltrosListado.module.css'
-
-/** Filtros del listado tal como se escriben en el formulario (todo texto; vacío = sin filtro). */
-export interface ValoresFiltros {
-  serie: string
-  numero: string
-  nifCliente: string
-  fechaDesde: string
-  fechaHasta: string
-  estadoEnvio: string
-}
-
-export const FILTROS_VACIOS: ValoresFiltros = { serie: '', numero: '', nifCliente: '', fechaDesde: '', fechaHasta: '', estadoEnvio: '' }
-
-export type CampoFiltro = keyof ValoresFiltros
-export const CAMPOS_FILTRO = Object.keys(FILTROS_VACIOS) as CampoFiltro[]
 
 interface Propiedades {
   /** Filtros activos en la URL: el formulario parte de ellos. El padre lo remonta (`key`) si cambian. */

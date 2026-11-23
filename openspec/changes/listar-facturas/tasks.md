@@ -27,10 +27,10 @@
 
 ## 6. Paginación y estados
 
-- [ ] 6.1 Crear los controles de paginación («Anterior», «Siguiente», «Página N de M», total de facturas y selector de 10/20/50/100) que escriben `page` y `size` en la URL. Se verifica con tests de los escenarios «Navegar entre páginas», «Primera y última página», «Cambiar el tamaño» y «Una sola página»
-- [ ] 6.2 Crear los estados vacíos: «Todavía no hay facturas» con enlace a «Emitir factura», «Ninguna factura cumple los filtros» con «Quitar filtros» y página fuera de rango con vuelta a la primera. Se verifica con tests MSW de los tres escenarios
-- [ ] 6.3 Mostrar la carga en una región `aria-live` («Cargando facturas…») sin perder los filtros, el 500 con `errorId` y el fallo de red con «Reintentar». Se verifica con tests MSW de carga, 500 y `HttpResponse.error()`, comprobando que los filtros escritos se conservan
-- [ ] 6.4 Añadir «Ver todas las facturas» en `RegistroEmitido`, junto a «Emitir otra factura». Se verifica con un test del flujo de emisión que comprueba que el enlace lleva a `/facturas`
+- [x] 6.1 Crear los controles de paginación («Anterior», «Siguiente», «Página N de M», total de facturas y selector de 10/20/50/100) que escriben `page` y `size` en la URL. Se verifica con tests de los escenarios «Navegar entre páginas», «Primera y última página», «Cambiar el tamaño» y «Una sola página»
+- [x] 6.2 Crear los estados vacíos: «Todavía no hay facturas» con enlace a «Emitir factura», «Ninguna factura cumple los filtros» con «Quitar filtros» y página fuera de rango con vuelta a la primera. Se verifica con tests MSW de los tres escenarios
+- [x] 6.3 Mostrar la carga en una región `aria-live` («Cargando facturas…») sin perder los filtros, el 500 con `errorId` y el fallo de red con «Reintentar». Se verifica con tests MSW de carga, 500 y `HttpResponse.error()`, comprobando que los filtros escritos se conservan
+- [x] 6.4 Añadir «Ver todas las facturas» en `RegistroEmitido`, junto a «Emitir otra factura». Se verifica con un test del flujo de emisión que comprueba que el enlace lleva a `/facturas`
 
 ## 7. Verificación integral
 

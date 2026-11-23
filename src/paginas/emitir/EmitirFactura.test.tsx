@@ -257,6 +257,8 @@ describe('resultado tras el 201 (5.3)', () => {
     expect(await screen.findByText('Aceptada por la AEAT')).toBeInTheDocument()
     expect(screen.getByText('Primer registro de la cadena')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Emitir' })).not.toBeInTheDocument()
+    // Tras emitir, el siguiente paso natural es ver el listado (fase 5, 6.4)
+    expect(within(screen.getByRole('main')).getByRole('link', { name: 'Ver todas las facturas' })).toHaveAttribute('href', '/facturas')
 
     await usuario.click(screen.getByRole('button', { name: 'Emitir otra factura' }))
     expect(screen.getByLabelText('Serie')).toHaveValue('')

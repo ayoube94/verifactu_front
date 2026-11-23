@@ -3,9 +3,12 @@ import { normalizarError } from '../../api/problemas.ts'
 import { useTituloPagina } from '../../app/useTituloPagina.ts'
 import { MensajeError } from '../../componentes/MensajeError.tsx'
 import estilos from '../Pagina.module.css'
-import { CAMPOS_FILTRO, FILTROS_VACIOS, FiltrosListado, type CampoFiltro, type ValoresFiltros } from './FiltrosListado.tsx'
+import { FiltrosListado } from './FiltrosListado.tsx'
+import { CAMPOS_FILTRO, FILTROS_VACIOS, type CampoFiltro, type ValoresFiltros } from './valoresFiltros.ts'
 import { aQuery, leerParametros, type ParametrosListado } from './listado.ts'
 import formato from './ListadoFacturas.module.css'
+import { EstadoVacio, type TipoVacio } from './EstadoVacio.tsx'
+import { Paginacion } from './Paginacion.tsx'
 import { TablaFacturas } from './TablaFacturas.tsx'
 import { useListadoFacturas } from './useListadoFacturas.ts'
 
@@ -51,7 +54,16 @@ export function ListadoFacturas() {
   }
   const quitar = () => setQuery(aQuery({ page: 0, size: parametros.size }))
 
+  const cambiarPagina = (pagina: number) => setQuery(aQuery({ ...parametros, page: pagina }))
+  // Cambiar el tamaño vuelve a la primera página: la actual dejaría de corresponder a lo que se ve
+  const cambiarTamano = (tamano: number) => setQuery(aQuery({ ...parametros, page: 0, size: tamano }))
+
   const validacion = consulta.error ? repartirValidacion(consulta.error) : undefined
+  const pagina = consulta.data
+  const facturas = pagina?.content ?? []
+  const hayFiltros = Object.values(filtros).some(Boolean)
+  const vacio: TipoVacio | undefined =
+    !pagina || facturas.length > 0 ? undefined : (pagina.totalElements ?? 0) > 0 ? 'fuera-de-rango' : hayFiltros ? 'sin-resultados' : 'sin-facturas'
 
   return (
     <section className={`${estilos.pagina} ${formato.pagina}`}>
@@ -64,7 +76,20 @@ export function ListadoFacturas() {
           ))}
         </div>
       ) : null}
-      {consulta.data?.content?.length ? <TablaFacturas facturas={consulta.data.content} /> : null}
+      {/* Región en vivo siempre presente: anuncia la carga y se vacía al terminar (también al cambiar de página) */}
+      <output className={formato.estado}>{consulta.isFetching ? 'Cargando facturas…' : ''}</output>
+      {facturas.length > 0 && <TablaFacturas facturas={facturas} />}
+      {vacio && <EstadoVacio tipo={vacio} onQuitarFiltros={quitar} onPrimeraPagina={() => cambiarPagina(0)} />}
+      {pagina && facturas.length > 0 && (
+        <Paginacion
+          pagina={pagina.page ?? parametros.page}
+          totalPaginas={pagina.totalPages ?? 1}
+          totalFacturas={pagina.totalElements ?? facturas.length}
+          tamano={parametros.size}
+          onPagina={cambiarPagina}
+          onTamano={cambiarTamano}
+        />
+      )}
       {consulta.error && !validacion && <MensajeError error={consulta.error} onReintentar={() => void consulta.refetch()} />}
     </section>
   )

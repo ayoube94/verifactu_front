@@ -1,0 +1,27 @@
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--espacio-3) var(--espacio-5);
+}
+
+.total {
+  font-weight: var(--peso-medio);
+}
+
+.paginas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.actual {
+  color: var(--color-texto-sec);
+  font-variant-numeric: tabular-nums;
+}
+
+.tamano {
+  width: 8rem;
+}

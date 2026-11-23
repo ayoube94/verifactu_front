@@ -1,0 +1,17 @@
+.vacio {
+  display: grid;
+  gap: var(--espacio-2);
+  justify-items: start;
+  padding: var(--espacio-5) 0;
+  border-top: var(--filete-fuerte);
+}
+
+.titulo {
+  font-size: var(--texto-destacado);
+  font-weight: var(--peso-medio);
+  color: var(--color-tinta);
+}
+
+.texto {
+  color: var(--color-texto-sec);
+}

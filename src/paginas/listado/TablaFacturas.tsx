@@ -45,7 +45,7 @@ export function TablaFacturas({ facturas }: { facturas: readonly ResumenFactura[
                 </td>
                 <td data-etiqueta="Cliente">
                   <span className={estilos.valor}>
-                    <span className={estilos.cliente}>{factura.clienteNombre}</span>
+                    {factura.clienteNombre}
                     <span className={estilos.secundario}>{factura.clienteNif}</span>
                   </span>
                 </td>
