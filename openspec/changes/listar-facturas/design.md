@@ -31,8 +31,8 @@ Alternativas descartadas:
 - *Estado en React sin URL:* se pierde al recargar o al volver desde una factura, y no se puede compartir.
 - *Almacenar los filtros en `localStorage`:* contradice la restricción de no guardar datos del operador más allá de la sesión y no resuelve compartir.
 
-### Filtrar al pulsar «Filtrar», no al escribir
-Una petición por carácter sobre serie, número o NIF genera ruido y parpadeos, y el contrato ofrece coincidencia exacta, no por prefijo, así que buscar mientras se escribe daría resultados vacíos intermedios. «Filtrar» se activa con Intro desde cualquier campo. El selector de estado y el de tamaño de página sí actúan al cambiar, porque son una elección cerrada.
+### Filtrar al pulsar «Filtrar», no al escribir ni al elegir
+Una petición por carácter sobre serie, número o NIF genera ruido y parpadeos, y el contrato ofrece coincidencia exacta, no por prefijo, así que buscar mientras se escribe daría resultados vacíos intermedios. «Filtrar» se activa con Intro desde cualquier campo y aplica todos los filtros a la vez, también el de estado, para que el comportamiento sea el mismo en todos. Solo el tamaño de página actúa al cambiar, porque es un control de la paginación y no un filtro.
 
 ### Consulta con TanStack Query y página anterior visible
 Clave `['facturas', parametros]`, `placeholderData: keepPreviousData` para que la tabla no se vacíe entre páginas (la región `aria-live` sigue anunciando la carga), `retry: false` en 4xx igual que `useFactura` y `refetchOnWindowFocus` desactivado. Un listado puede quedar viejo, pero el estado de envío de una factura recién emitida debe verse al volver: `staleTime` 0 y recarga al montar. La caché vive solo en memoria de la pestaña (`consultas.ts`), sin persistencia.

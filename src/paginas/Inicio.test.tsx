@@ -11,6 +11,7 @@ describe('página de inicio', () => {
 
     const principal = screen.getByRole('main')
     expect(within(principal).getByRole('heading', { level: 1, name: 'Facturación VeriFactu' })).toBeInTheDocument()
+    expect(within(principal).getByRole('link', { name: 'Listar facturas' })).toHaveAttribute('href', '/facturas')
     expect(within(principal).getByRole('link', { name: 'Emitir factura' })).toHaveAttribute('href', '/facturas/nueva')
     expect(within(principal).getByRole('link', { name: 'Consultar factura' })).toHaveAttribute('href', '/consultar')
     expect(within(principal).getByRole('link', { name: 'Verificar huella' })).toHaveAttribute('href', '/verificar-huella')
@@ -20,7 +21,7 @@ describe('página de inicio', () => {
   test('la navegación solo contiene secciones existentes', () => {
     renderizarRuta('/')
     const enlaces = within(screen.getByRole('navigation', { name: 'Principal' })).getAllByRole('link')
-    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio', 'Emitir factura', 'Consultar factura', 'Verificar huella'])
+    expect(enlaces.map((enlace) => enlace.textContent)).toEqual(['Inicio', 'Facturas', 'Emitir factura', 'Consultar factura', 'Verificar huella'])
   })
 
   test('muestra el servicio operativo', async () => {

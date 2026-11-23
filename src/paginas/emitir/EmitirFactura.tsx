@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { useBlocker } from 'react-router'
+import { Link, useBlocker } from 'react-router'
 import { ErrorApi } from '../../api/problemas.ts'
 import { useTituloPagina } from '../../app/useTituloPagina.ts'
 import { Boton } from '../../componentes/Boton.tsx'
@@ -114,9 +114,12 @@ export function EmitirFactura() {
         <div className={formulario.resultado}>
           {emitidaAntes && <p className={formulario.avisoEmision}>Esta factura ya se había emitido.</p>}
           <RegistroEmitido factura={resultado} />
-          <button type="button" onClick={verFormulario}>
-            Emitir otra factura
-          </button>
+          <div className={formulario.accionesResultado}>
+            <button type="button" onClick={verFormulario}>
+              Emitir otra factura
+            </button>
+            <Link to="/facturas">Ver todas las facturas</Link>
+          </div>
         </div>
       ) : (
         <FormularioEmision onEnviar={(valores) => emision.mutate(valores)} enviando={enviando} errorServidor={error} />

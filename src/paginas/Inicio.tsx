@@ -4,8 +4,13 @@ import { Boton } from '../componentes/Boton.tsx'
 import { useTituloPagina } from '../app/useTituloPagina.ts'
 import estilos from './Inicio.module.css'
 
-/** Operaciones del frontal, todas disponibles desde la fase 3 (notes/plan-por-fases.md). */
+/** Operaciones del frontal, todas disponibles desde la fase 5 (notes/plan-por-fases.md). */
 const operaciones = [
+  {
+    nombre: 'Listar facturas',
+    descripcion: 'Ver las facturas emitidas, filtrarlas por número, cliente, fecha o estado ante la AEAT y abrir cualquiera.',
+    ruta: '/facturas',
+  },
   {
     nombre: 'Emitir factura',
     descripcion: 'Registrar una factura, encadenarla con su huella y remitirla a la AEAT.',
@@ -34,7 +39,7 @@ export function Inicio() {
         </h1>
         <p className={estilos.entrada}>
           Zefact registra cada factura, la encadena con la huella de la anterior y la remite a la AEAT. Desde aquí
-          emitirás, consultarás y verificarás esos registros.
+          emitirás, listarás, consultarás y verificarás esos registros.
         </p>
 
         <h2 className={estilos.subtitulo}>Operaciones</h2>

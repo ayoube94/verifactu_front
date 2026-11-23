@@ -25,3 +25,10 @@
   gap: var(--espacio-4);
   justify-items: start;
 }
+
+.accionesResultado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3) var(--espacio-5);
+}

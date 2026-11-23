@@ -1,0 +1,32 @@
+.filtros {
+  display: grid;
+  min-width: 0;
+  gap: var(--espacio-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+/* A 360 px serie y número comparten fila (son cortos); el resto ocupa el ancho para que el resultado quede más a mano */
+.filtros > :not(.mitad) {
+  grid-column: 1 / -1;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+@media (min-width: 40rem) {
+  .filtros {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filtros > :not(.mitad) {
+    grid-column: auto;
+  }
+
+  .filtros > .acciones {
+    grid-column: 1 / -1;
+  }
+}
