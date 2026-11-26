@@ -8,7 +8,8 @@
 ## 2. Estilos a 360 px
 
 - [x] 2.1 En `TablaFacturas.module.css`, hasta 480 px: rejilla de dos columnas por fila con fecha y tipo en una columna cada una y el resto de celdas a fila completa, y descripción del tipo recortada como solo para lectores de pantalla. Sin cambios por encima de 480 px. Se verifica con un E2E a 360 px (fecha y tipo con la misma posición vertical, descripción con caja de 1 px) y otro a 1280 px (descripción visible)
-- [ ] 2.2 Comprobar la reducción y el comportamiento con texto ampliado: repetir la medición de 1.1, comprobar que el bloque típico baja al menos un 20 % y que con el tamaño de letra del navegador al 200 % fecha y tipo bajan a dos líneas sin desbordar. Se verifica con las cifras antes y después en el PR, la captura revisada a 360 px y el escenario de nombres largos de `e2e/listado.spec.ts` en verde. Si no se llega al 20 %, se pausa y se consulta (ver `design.md`, Open Questions)
+- [ ] 2.2 Juntar la factura y el importe en una misma fila con `order`, pasar la etiqueta de todas las celdas a `--texto-pequeno`, reducir el relleno lateral y el hueco de las cuatro celdas de media anchura, y dejar que todas las celdas envuelvan (`flex-wrap` y `min-width: 0` en lugar de `flex: none`). Se verifica con un E2E a 360 px (factura e importe con la misma posición vertical, y fecha y tipo también), otro con la letra al 200 % (`html { font-size: 200% }`, sin desplazamiento horizontal y con todos los datos visibles) y el de nombres largos en verde
+- [ ] 2.3 Comprobar la reducción: repetir la medición de 1.1 y comprobar que el bloque típico baja al menos un 20 % respecto a la base (≤ 225 px de media). Se verifica con las cifras antes y después en el PR y la captura revisada a 360 px. Si no se llega al 20 %, se pausa y se consulta (ver `design.md`, Risks)
 
 ## 3. Cierre
 
