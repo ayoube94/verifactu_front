@@ -149,6 +149,12 @@
     padding: var(--espacio-1) var(--espacio-2);
     border-bottom: 0;
     text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  /* En escritorio el número y el importe no se parten; aquí, con letra grande, necesitan poder hacerlo */
+  .tabla td.numero {
+    white-space: normal;
   }
 
   .valor {
