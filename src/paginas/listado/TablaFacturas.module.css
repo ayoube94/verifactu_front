@@ -38,7 +38,8 @@
   overflow-wrap: anywhere;
 }
 
-.secundario {
+.secundario,
+.descripcionTipo {
   display: block;
   font-size: var(--texto-pequeno);
   color: var(--color-texto-sec);
@@ -96,9 +97,34 @@
     clip-path: inset(50%);
   }
 
+  /* Dos columnas por bloque: fecha y tipo comparten línea y el resto de datos ocupa la fila entera */
   .tabla tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: var(--espacio-2) 0;
     border-bottom: var(--filete-fuerte);
+  }
+
+  .tabla td:not([data-etiqueta='Fecha'], [data-etiqueta='Tipo']) {
+    grid-column: 1 / -1;
+  }
+
+  /* En media anchura, si etiqueta y valor no caben en una línea, bajan a dos dentro de su celda en vez de desbordar */
+  .tabla td[data-etiqueta='Fecha'],
+  .tabla td[data-etiqueta='Tipo'] {
+    flex-wrap: wrap;
+    gap: 0 var(--espacio-3);
+    min-width: 0;
+  }
+
+  /* El tipo se ve solo con su código; la descripción se recorta (no display:none) y sigue en el texto accesible */
+  .descripcionTipo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .tabla td {

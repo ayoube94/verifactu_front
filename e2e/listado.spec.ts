@@ -95,3 +95,44 @@ test.describe('listado de facturas', () => {
     expect(peticiones.at(-1)).toMatchObject({ serie: '2026', numero: '001', page: '0', size: '20' })
   })
 })
+
+const DESCRIPCION_F3 = 'Factura emitida en sustitución de simplificadas'
+
+test.describe('filas compactas (compactar-listado-movil)', () => {
+  test.describe('a 360 px', () => {
+    test.use({ viewport: { width: 360, height: 740 } })
+
+    test('fecha y tipo comparten línea y la descripción del tipo se recorta pero sigue en el texto', async ({ page }) => {
+      await simularListado(page, [resumen(1, { tipoFactura: 'F3' })])
+      await page.goto('/facturas')
+      const fecha = page.locator('td[data-etiqueta="Fecha"]').first()
+      const tipo = page.locator('td[data-etiqueta="Tipo"]').first()
+      await expect(tipo).toBeVisible()
+
+      // Misma línea: la misma posición vertical, una celda al lado de la otra
+      const [cajaFecha, cajaTipo] = [await fecha.boundingBox(), await tipo.boundingBox()]
+      expect(cajaFecha!.y).toBe(cajaTipo!.y)
+      expect(cajaTipo!.x).toBeGreaterThan(cajaFecha!.x)
+
+      // La descripción ocupa 1 px (recortada), no desaparece: está en el texto de la celda
+      const descripcion = page.getByText(DESCRIPCION_F3)
+      const caja = await descripcion.boundingBox()
+      expect(caja!.width).toBeLessThanOrEqual(1)
+      expect(caja!.height).toBeLessThanOrEqual(1)
+      await expect(tipo).toContainText(DESCRIPCION_F3)
+      await expect(tipo).toContainText('F3')
+    })
+  })
+
+  test.describe('a 1280 px', () => {
+    test.use({ viewport: { width: 1280, height: 900 } })
+
+    test('la descripción del tipo sigue visible junto al código', async ({ page }) => {
+      await simularListado(page, [resumen(1, { tipoFactura: 'F3' })])
+      await page.goto('/facturas')
+      const caja = await page.getByText(DESCRIPCION_F3).boundingBox()
+      expect(caja!.width).toBeGreaterThan(50)
+      expect(caja!.height).toBeGreaterThan(8)
+    })
+  })
+})
