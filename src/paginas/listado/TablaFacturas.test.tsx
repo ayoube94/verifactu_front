@@ -75,4 +75,18 @@ describe('tabla de facturas', () => {
     const orden = screen.getAllByRole('link', { name: /\// }).map((enlace) => enlace.textContent)
     expect(orden).toEqual(['Z/9', 'A/1', 'M/5'])
   })
+
+  test('la celda del tipo lleva el código y la descripción con un espacio, y el NIF sigue en la del cliente', async () => {
+    servirPagina([resumen(7, '2026/007', 'ACEPTADO', { tipoFactura: 'F3', clienteNif: 'G11223344' })])
+    renderizarRuta('/facturas')
+
+    const tabla = await screen.findByRole('table', { name: 'Facturas emitidas' })
+    const celda = (etiqueta: string) => tabla.querySelector(`td[data-etiqueta="${etiqueta}"]`)!
+    // A 360 px la descripción se oculta solo visualmente: el texto de la celda (lo que lee un lector de pantalla) la conserva
+    expect(celda('Tipo').textContent).toBe('F3 Factura emitida en sustitución de simplificadas')
+    expect(celda('Cliente')).toHaveTextContent('G11223344')
+    for (const etiqueta of ['Factura', 'Fecha', 'Tipo', 'Cliente', 'Importe total', 'Estado ante la AEAT']) {
+      expect(celda(etiqueta)).toBeInTheDocument()
+    }
+  })
 })

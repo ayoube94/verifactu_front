@@ -95,3 +95,80 @@ test.describe('listado de facturas', () => {
     expect(peticiones.at(-1)).toMatchObject({ serie: '2026', numero: '001', page: '0', size: '20' })
   })
 })
+
+const DESCRIPCION_F3 = 'Factura emitida en sustitución de simplificadas'
+
+test.describe('filas compactas (compactar-listado-movil)', () => {
+  test.describe('a 360 px', () => {
+    test.use({ viewport: { width: 360, height: 740 } })
+
+    test('fecha y tipo comparten línea y la descripción del tipo se recorta pero sigue en el texto', async ({ page }) => {
+      await simularListado(page, [resumen(1, { tipoFactura: 'F3' })])
+      await page.goto('/facturas')
+      const fecha = page.locator('td[data-etiqueta="Fecha"]').first()
+      const tipo = page.locator('td[data-etiqueta="Tipo"]').first()
+      await expect(tipo).toBeVisible()
+
+      // Misma línea: la misma posición vertical, una celda al lado de la otra
+      const [cajaFecha, cajaTipo] = [await fecha.boundingBox(), await tipo.boundingBox()]
+      expect(cajaFecha!.y).toBe(cajaTipo!.y)
+      expect(cajaTipo!.x).toBeGreaterThan(cajaFecha!.x)
+
+      // La descripción ocupa 1 px (recortada), no desaparece: está en el texto de la celda
+      const descripcion = page.getByText(DESCRIPCION_F3)
+      const caja = await descripcion.boundingBox()
+      expect(caja!.width).toBeLessThanOrEqual(1)
+      expect(caja!.height).toBeLessThanOrEqual(1)
+      await expect(tipo).toContainText(DESCRIPCION_F3)
+      await expect(tipo).toContainText('F3')
+    })
+  })
+
+  test.describe('a 360 px (factura e importe, letra ampliada)', () => {
+    test.use({ viewport: { width: 360, height: 740 } })
+
+    test('factura e importe comparten línea, y fecha y tipo también', async ({ page }) => {
+      await simularListado(page, [resumen(1, { importeTotal: 98765.4 })])
+      await page.goto('/facturas')
+      const celda = (etiqueta: string) => page.locator(`td[data-etiqueta="${etiqueta}"]`).first()
+      await expect(celda('Factura')).toBeVisible()
+
+      const [factura, importe, fecha, tipo] = [await celda('Factura').boundingBox(), await celda('Importe total').boundingBox(), await celda('Fecha').boundingBox(), await celda('Tipo').boundingBox()]
+      expect(importe!.y).toBe(factura!.y)
+      expect(importe!.x).toBeGreaterThan(factura!.x)
+      expect(tipo!.y).toBe(fecha!.y)
+      // Primero factura e importe, debajo fecha y tipo
+      expect(fecha!.y).toBeGreaterThan(factura!.y)
+    })
+
+    test('con la letra del navegador al 200 % no hay desplazamiento horizontal y cada dato sigue visible con su etiqueta', async ({ page }) => {
+      await simularListado(page, [resumen(1, { importeTotal: 98765.4 }), resumen(2, { tipoFactura: 'F3', clienteNombre: 'ASOCIACIÓN INTERPROFESIONAL DE EMPRESAS DE SERVICIOS' })])
+      await page.goto('/facturas')
+      await expect(page.getByRole('link', { name: '2026/001' })).toBeVisible()
+      await page.addStyleTag({ content: 'html { font-size: 200% }' })
+
+      const { ancho, visible } = await page.evaluate(() => ({ ancho: document.documentElement.scrollWidth, visible: document.documentElement.clientWidth }))
+      expect(ancho).toBeLessThanOrEqual(visible)
+      // Ninguna celda de datos se sale por la derecha de la pantalla
+      const salidas = await page.evaluate(() =>
+        [...document.querySelectorAll('tbody td')].filter((celda) => celda.getBoundingClientRect().right > document.documentElement.clientWidth + 1).map((celda) => celda.getAttribute('data-etiqueta')),
+      )
+      expect(salidas).toEqual([])
+      for (const etiqueta of ['Factura', 'Fecha', 'Tipo', 'Cliente', 'Importe total', 'Estado ante la AEAT']) {
+        await expect(page.locator(`td[data-etiqueta="${etiqueta}"]`).first()).toBeVisible()
+      }
+    })
+  })
+
+  test.describe('a 1280 px', () => {
+    test.use({ viewport: { width: 1280, height: 900 } })
+
+    test('la descripción del tipo sigue visible junto al código', async ({ page }) => {
+      await simularListado(page, [resumen(1, { tipoFactura: 'F3' })])
+      await page.goto('/facturas')
+      const caja = await page.getByText(DESCRIPCION_F3).boundingBox()
+      expect(caja!.width).toBeGreaterThan(50)
+      expect(caja!.height).toBeGreaterThan(8)
+    })
+  })
+})

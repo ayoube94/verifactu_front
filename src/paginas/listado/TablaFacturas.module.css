@@ -38,7 +38,8 @@
   overflow-wrap: anywhere;
 }
 
-.secundario {
+.secundario,
+.descripcionTipo {
   display: block;
   font-size: var(--texto-pequeno);
   color: var(--color-texto-sec);
@@ -96,16 +97,56 @@
     clip-path: inset(50%);
   }
 
+  /*
+   * Dos columnas por bloque: factura e importe comparten línea, y fecha y tipo otra; el resto ocupa la fila entera.
+   * El importe sube junto a la factura con `order` (en el DOM va después del cliente): en cada fila solo el enlace de
+   * la factura es enfocable, así que el orden de tabulación no cambia.
+   */
   .tabla tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: var(--espacio-2) 0;
     border-bottom: var(--filete-fuerte);
   }
 
   .tabla td {
+    grid-column: 1 / -1;
+  }
+
+  .tabla td[data-etiqueta='Factura'],
+  .tabla td[data-etiqueta='Importe total'],
+  .tabla td[data-etiqueta='Fecha'],
+  .tabla td[data-etiqueta='Tipo'] {
+    grid-column: auto;
+    gap: 0 var(--espacio-2);
+  }
+
+  .tabla td[data-etiqueta='Factura'] {
+    order: -2;
+  }
+
+  .tabla td[data-etiqueta='Importe total'] {
+    order: -1;
+  }
+
+  /* El tipo se ve solo con su código; la descripción se recorta (no display:none) y sigue en el texto accesible */
+  .descripcionTipo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Si etiqueta y valor no caben en una línea, el valor baja a la siguiente dentro de su celda en vez de desbordar */
+  .tabla td {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--espacio-4);
-    padding: var(--espacio-1) var(--espacio-3);
+    gap: 0 var(--espacio-4);
+    min-width: 0;
+    padding: var(--espacio-1) var(--espacio-2);
     border-bottom: 0;
     text-align: right;
   }
@@ -116,7 +157,9 @@
 
   .tabla td::before {
     content: attr(data-etiqueta);
-    flex: none;
+    flex: 0 1 auto;
+    overflow-wrap: anywhere;
+    font-size: var(--texto-pequeno);
     color: var(--color-texto-sec);
     text-align: left;
   }

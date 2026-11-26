@@ -40,7 +40,13 @@ export function TablaFacturas({ facturas }: { facturas: readonly ResumenFactura[
                 <td data-etiqueta="Tipo">
                   <span className={estilos.valor}>
                     <span className={estilos.codigoTipo}>{factura.tipoFactura}</span>
-                    {descripcionTipo(factura.tipoFactura) && <span className={estilos.secundario}>{descripcionTipo(factura.tipoFactura)}</span>}
+                    {/* El espacio separa código y descripción en el texto accesible cuando la descripción se oculta a 360 px */}
+                    {descripcionTipo(factura.tipoFactura) && (
+                      <>
+                        {' '}
+                        <span className={estilos.descripcionTipo}>{descripcionTipo(factura.tipoFactura)}</span>
+                      </>
+                    )}
                   </span>
                 </td>
                 <td data-etiqueta="Cliente">
