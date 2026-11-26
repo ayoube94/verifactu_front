@@ -133,9 +133,9 @@ function comando_crear(change, fase, descripcion) {
 function comando_tarea(change, numero) {
   if (!numero) throw new Error('tarea <change> <X.Y>')
   const issues = issuesDelRepo()
-  const tarea = issues.find(
-    (i) => esTarea(i, change) && i.title.includes(` ${numero} `) && i.state === 'OPEN',
-  )
+  // El número va al principio del título («[Fase 5] 1.1 …»): `includes` cerraba la issue de otra tarea cuyo texto mencionaba «1.1»
+  const prefijo = new RegExp(`^\\[Fase \\d+\\] ${numero.replace(/\./g, '\\.')} `)
+  const tarea = issues.find((i) => esTarea(i, change) && prefijo.test(i.title) && i.state === 'OPEN')
   if (!tarea) {
     console.log(`No hay issue abierto para la tarea ${numero} de ${change} (¿ya cerrado o no creado?).`)
     return
