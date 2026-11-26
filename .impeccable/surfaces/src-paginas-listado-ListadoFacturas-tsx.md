@@ -30,7 +30,7 @@ Revisión hecha en un solo contexto (sin sub-agentes), con capturas a 1280 y 360
 - **P1 corregido:** un rango de fechas invertido mostraba el error pero no movía el foco, de modo que un lector de pantalla no lo anunciaba. Ahora se enfoca «Fecha desde» y su error se lee por `aria-describedby`.
 - **P2 corregido:** a 360 px los seis filtros ocupaban una columna cada uno; serie y número comparten fila.
 - **P2 resuelto** (change `compactar-listado-movil`, #90): a 360 px el bloque medio de una factura baja de 281 a 185 px (−34,2 %; el típico de 272 a 184 px) y las 8 facturas de la revisión de 2.244 a 1.478 px. Se logró juntando fecha y tipo (−19,2 % por sí solo), factura e importe, y con etiquetas de 13 px y relleno lateral de 8 px. Efecto añadido: ya no hay desbordamiento horizontal con la letra del navegador al 200 %, que existía antes.
-- **P2 abierto:** al cambiar de página el scroll no vuelve al inicio del listado.
+- **P2 resuelto** (change `volver-arriba-al-paginar`, #91): «Anterior», «Siguiente» y el cambio de tamaño llevan la vista al inicio de la tabla, de inmediato y sin animación, solo si ese inicio queda por encima de lo visible; filtrar, cargar y el historial no desplazan, y el foco se queda en el control.
 - **P3 abierto:** en «Ninguna factura cumple los filtros» «Quitar filtros» aparece dos veces (formulario y estado vacío); la spec lo pide en el estado vacío.
 
 ## Unresolved
