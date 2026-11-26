@@ -19,7 +19,7 @@ STORY: El operador filtra, localiza la factura, la abre y vuelve con «atrás» 
 
 FIRST VIEWPORT: Titular «Facturas», los seis filtros en dos filas y, debajo, la tabla. A 360 px serie y número comparten fila para que la primera factura quede lo más a mano posible.
 
-FORM: Tabla con cabeceras de columna (factura, fecha, tipo, cliente, importe a la derecha con cifras tabulares, estado). A 360 px cada fila se apila como bloque con la etiqueta de cada dato; sin desplazamiento horizontal.
+FORM: Tabla con cabeceras de columna (factura, fecha, tipo, cliente, importe a la derecha con cifras tabulares, estado). A 360 px cada fila se apila como bloque compacto de dos columnas: factura e importe en una línea, fecha y tipo en otra (el tipo solo con su código; la descripción queda para lectores de pantalla), y cliente y estado en una línea propia cada uno; etiquetas pequeñas y celdas que envuelven, sin desplazamiento horizontal ni con la letra al 200 %.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
@@ -29,7 +29,7 @@ Revisión hecha en un solo contexto (sin sub-agentes), con capturas a 1280 y 360
 
 - **P1 corregido:** un rango de fechas invertido mostraba el error pero no movía el foco, de modo que un lector de pantalla no lo anunciaba. Ahora se enfoca «Fecha desde» y su error se lee por `aria-describedby`.
 - **P2 corregido:** a 360 px los seis filtros ocupaban una columna cada uno; serie y número comparten fila.
-- **P2 abierto:** a 360 px cada factura ocupa unos 400 px de alto. Candidato: ocultar la descripción del tipo en móvil y fundir fecha y tipo.
+- **P2 resuelto** (change `compactar-listado-movil`, #90): a 360 px el bloque medio de una factura baja de 281 a 185 px (−34,2 %; el típico de 272 a 184 px) y las 8 facturas de la revisión de 2.244 a 1.478 px. Se logró juntando fecha y tipo (−19,2 % por sí solo), factura e importe, y con etiquetas de 13 px y relleno lateral de 8 px. Efecto añadido: ya no hay desbordamiento horizontal con la letra del navegador al 200 %, que existía antes.
 - **P2 abierto:** al cambiar de página el scroll no vuelve al inicio del listado.
 - **P3 abierto:** en «Ninguna factura cumple los filtros» «Quitar filtros» aparece dos veces (formulario y estado vacío); la spec lo pide en el estado vacío.
 
