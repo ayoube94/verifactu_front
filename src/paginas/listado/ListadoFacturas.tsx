@@ -80,7 +80,7 @@ export function ListadoFacturas() {
   return (
     <section className={`${estilos.pagina} ${formato.pagina}`}>
       <h1 className={estilos.titulo}>Facturas</h1>
-      <FiltrosListado key={JSON.stringify(filtros)} inicial={filtros} errores={validacion?.campos} onAplicar={aplicar} onQuitar={quitar} />
+      <FiltrosListado key={JSON.stringify(filtros)} inicial={filtros} errores={validacion?.campos} onAplicar={aplicar} onQuitar={quitar} ocultarQuitar={vacio === 'sin-resultados'} />
       {validacion?.generales.length ? (
         <div role="alert" className={formato.errorGeneral}>
           {validacion.generales.map((mensaje) => (

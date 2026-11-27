@@ -105,11 +105,25 @@ describe('estados vacíos', () => {
     expect(await screen.findByText('Ninguna factura cumple los filtros')).toBeInTheDocument()
     expect(screen.queryByText('Todavía no hay facturas')).not.toBeInTheDocument()
 
+    // Un único «Quitar filtros»: el del estado vacío; el formulario no lo muestra
+    expect(screen.getAllByRole('button', { name: 'Quitar filtros' })).toHaveLength(1)
+    expect(within(screen.getByRole('form', { name: 'Filtros de facturas' })).queryByRole('button', { name: 'Quitar filtros' })).not.toBeInTheDocument()
+
     const vacio = screen.getByText('Ninguna factura cumple los filtros').closest('section, div')!
     await userEvent.click(within(vacio as HTMLElement).getByRole('button', { name: 'Quitar filtros' }))
 
     expect(await screen.findByRole('link', { name: '2026/001' })).toBeInTheDocument()
     expect(ultima(peticiones)).toEqual({ page: '0', size: '20' })
+  })
+
+  test('con filtros y con resultados: «Quitar filtros» está solo en el formulario y no hay estado vacío', async () => {
+    servir(() => ({ content: [resumen(1)], totalElements: 1, totalPages: 1 }))
+    renderizarRuta('/facturas?serie=A')
+    expect(await screen.findByRole('link', { name: '2026/001' })).toBeInTheDocument()
+
+    expect(screen.getAllByRole('button', { name: 'Quitar filtros' })).toHaveLength(1)
+    expect(within(screen.getByRole('form', { name: 'Filtros de facturas' })).getByRole('button', { name: 'Quitar filtros' })).toBeInTheDocument()
+    expect(screen.queryByText('Ninguna factura cumple los filtros')).not.toBeInTheDocument()
   })
 
   test('página fuera de rango: ofrece volver a la primera en vez de «Todavía no hay facturas»', async () => {

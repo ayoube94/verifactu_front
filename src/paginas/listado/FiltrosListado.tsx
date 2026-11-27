@@ -13,6 +13,8 @@ interface Propiedades {
   errores?: Partial<Record<CampoFiltro, string>>
   onAplicar: (valores: ValoresFiltros) => void
   onQuitar: () => void
+  /** Oculta «Quitar filtros» cuando otra parte de la pantalla ya lo ofrece (el estado «ninguna factura cumple los filtros»). */
+  ocultarQuitar?: boolean
 }
 
 const MENSAJE_RANGO = 'La fecha desde no puede ser posterior a la fecha hasta'
@@ -20,7 +22,7 @@ const MENSAJE_RANGO = 'La fecha desde no puede ser posterior a la fecha hasta'
 const hayValores = (valores: ValoresFiltros) => CAMPOS_FILTRO.some((campo) => valores[campo].trim() !== '')
 
 /** Formulario de filtros del listado: se aplican todos juntos al pulsar «Filtrar» (o Intro). */
-export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: Propiedades) {
+export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar, ocultarQuitar = false }: Propiedades) {
   const [valores, setValores] = useState<ValoresFiltros>(inicial)
   const [errorRango, setErrorRango] = useState<string>()
   const campoDesde = useRef<HTMLInputElement>(null)
@@ -83,7 +85,7 @@ export function FiltrosListado({ inicial, errores = {}, onAplicar, onQuitar }: P
         <Boton type="submit" variante="principal">
           Filtrar
         </Boton>
-        {(hayValores(valores) || hayValores(inicial)) && <Boton onClick={quitar}>Quitar filtros</Boton>}
+        {!ocultarQuitar && (hayValores(valores) || hayValores(inicial)) && <Boton onClick={quitar}>Quitar filtros</Boton>}
       </div>
     </form>
   )

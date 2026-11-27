@@ -54,7 +54,9 @@ describe('filtros del listado', () => {
   })
 
   test('«Quitar filtros» vacía los campos y vuelve a la primera página sin filtros', async () => {
-    const peticiones = servirListado()
+    // Con resultados: sin ellos, el botón del formulario se oculta porque lo ofrece el estado vacío
+    const factura = { id: 1, numSerieFactura: 'A/001', fechaExpedicion: '2026-03-05', tipoFactura: 'F1', clienteNif: 'B12345678', clienteNombre: 'Cliente SL', importeTotal: 1210, estadoEnvio: 'RECHAZADO', huella: 'ABC' }
+    const peticiones = servirListado({ content: [factura], page: 2, size: 50, totalElements: 101, totalPages: 3 })
     const { router } = renderizarRuta('/facturas?serie=A&estadoEnvio=RECHAZADO&page=2&size=50')
     await waitFor(() => expect(ultima(peticiones)).toEqual({ serie: 'A', estadoEnvio: 'RECHAZADO', page: '2', size: '50' }))
 
