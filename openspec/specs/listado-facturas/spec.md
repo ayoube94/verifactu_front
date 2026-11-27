@@ -102,7 +102,7 @@ La pantalla SHALL reflejar en la query de la URL los filtros, la página y el ta
 - **THEN** la pantalla ignora el valor no válido y usa el valor por defecto de ese parámetro, sin enviar a la API un valor que sabe que rechazará
 
 ### Requirement: Estados vacíos
-La pantalla SHALL distinguir entre que no exista ninguna factura y que ninguna cumpla los filtros.
+La pantalla SHALL distinguir entre que no exista ninguna factura y que ninguna cumpla los filtros, y MUST NOT mostrar la acción «Quitar filtros» más de una vez a la vez.
 
 #### Scenario: Todavía no hay facturas
 - **WHEN** la API responde 200 con `totalElements` 0 y no hay filtros activos
@@ -110,7 +110,11 @@ La pantalla SHALL distinguir entre que no exista ninguna factura y que ninguna c
 
 #### Scenario: Ninguna cumple los filtros
 - **WHEN** la API responde 200 con `totalElements` 0 y hay filtros activos
-- **THEN** la pantalla muestra «Ninguna factura cumple los filtros» con la acción «Quitar filtros»
+- **THEN** la pantalla muestra «Ninguna factura cumple los filtros» con la acción «Quitar filtros», y esa es la única «Quitar filtros» de la pantalla: el formulario de filtros no la muestra
+
+#### Scenario: Con resultados «Quitar filtros» sigue en el formulario
+- **WHEN** hay filtros activos y la API devuelve facturas
+- **THEN** el formulario de filtros muestra «Quitar filtros» y la pantalla no muestra ningún estado vacío
 
 #### Scenario: Página fuera de rango
 - **WHEN** la URL pide una página mayor que la última y la API responde 200 sin facturas pero con `totalElements` mayor que 0
