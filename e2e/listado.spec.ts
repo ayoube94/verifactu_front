@@ -172,3 +172,62 @@ test.describe('filas compactas (compactar-listado-movil)', () => {
     })
   })
 })
+
+/** Sirve páginas de `total` facturas repartidas de 50 en 50, según el `page` de la query. */
+async function simularListadoPaginado(pagina: Page, total: number) {
+  await pagina.route('**/actuator/health', (ruta) => ruta.fulfill({ json: { status: 'UP' } }))
+  await pagina.route(/\/api\/v1\/facturas\?/, (ruta) => {
+    const query = new URL(ruta.request().url()).searchParams
+    const page = Number(query.get('page') ?? 0)
+    const size = Number(query.get('size') ?? 20)
+    const content = Array.from({ length: Math.max(0, Math.min(size, total - page * size)) }, (_, i) => resumen(page * size + i + 1))
+    return ruta.fulfill({ json: { content, page, size, totalElements: total, totalPages: Math.ceil(total / size) } })
+  })
+}
+
+test.describe('vista al cambiar de página (volver-arriba-al-paginar)', () => {
+  for (const ancho of [360, 1280]) {
+    test.describe(`a ${ancho} px`, () => {
+      test.use({ viewport: { width: ancho, height: ancho === 360 ? 740 : 900 } })
+
+      test('«Siguiente» desde el final de una página larga lleva el inicio de la tabla a la vista y el foco sigue en el botón', async ({ page }) => {
+        await simularListadoPaginado(page, 150)
+        await page.goto('/facturas?size=50')
+        const siguiente = page.getByRole('button', { name: 'Siguiente' })
+        await expect(page.getByRole('link', { name: '2026/050' })).toBeVisible()
+        await siguiente.scrollIntoViewIfNeeded()
+        await siguiente.focus()
+        expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(500)
+
+        await siguiente.click()
+        await expect(page.getByText('Página 2 de 3')).toBeVisible()
+
+        const inicio = await page.locator('table').evaluate((tabla) => tabla.getBoundingClientRect().top)
+        expect(inicio).toBeGreaterThanOrEqual(-1)
+        expect(inicio).toBeLessThan(200)
+        await expect(siguiente).toBeFocused()
+      })
+    })
+  }
+
+  test.describe('a 1280 px con pocas facturas', () => {
+    test.use({ viewport: { width: 1280, height: 900 } })
+
+    test('«Siguiente» no cambia la posición de desplazamiento', async ({ page }) => {
+      // Tres facturas por página y tres páginas: todo cabe en pantalla sin desplazar
+      await page.route('**/actuator/health', (ruta) => ruta.fulfill({ json: { status: 'UP' } }))
+      await page.route(/\/api\/v1\/facturas\?/, (ruta) => {
+        const pagina = Number(new URL(ruta.request().url()).searchParams.get('page') ?? 0)
+        return ruta.fulfill({ json: { content: [resumen(1), resumen(2), resumen(3)], page: pagina, size: 3, totalElements: 9, totalPages: 3 } })
+      })
+      await page.goto('/facturas')
+      await expect(page.getByText('Página 1 de 3')).toBeVisible()
+      const antes = await page.evaluate(() => window.scrollY)
+
+      await page.getByRole('button', { name: 'Siguiente' }).click()
+      await expect(page.getByText('Página 2 de 3')).toBeVisible()
+
+      expect(await page.evaluate(() => window.scrollY)).toBe(antes)
+    })
+  })
+})

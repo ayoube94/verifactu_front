@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { normalizarError } from '../../api/problemas.ts'
 import { useTituloPagina } from '../../app/useTituloPagina.ts'
@@ -11,6 +12,7 @@ import { EstadoVacio, type TipoVacio } from './EstadoVacio.tsx'
 import { Paginacion } from './Paginacion.tsx'
 import { TablaFacturas } from './TablaFacturas.tsx'
 import { useListadoFacturas } from './useListadoFacturas.ts'
+import { volverAlInicioDeLaTabla } from './volverAlInicio.ts'
 
 const filtrosDe = (parametros: ParametrosListado): ValoresFiltros => ({
   ...FILTROS_VACIOS,
@@ -46,6 +48,7 @@ export function ListadoFacturas() {
   const parametros = leerParametros(query)
   const consulta = useListadoFacturas(parametros)
   const filtros = filtrosDe(parametros)
+  const inicioTabla = useRef<HTMLOutputElement>(null)
 
   // Un filtro nuevo vuelve a la primera página y conserva el tamaño elegido. `leerParametros` recorta y descarta lo no válido.
   const aplicar = (valores: ValoresFiltros) => {
@@ -57,6 +60,15 @@ export function ListadoFacturas() {
   const cambiarPagina = (pagina: number) => setQuery(aQuery({ ...parametros, page: pagina }))
   // Cambiar el tamaño vuelve a la primera página: la actual dejaría de corresponder a lo que se ve
   const cambiarTamano = (tamano: number) => setQuery(aQuery({ ...parametros, page: 0, size: tamano }))
+  // Los controles están bajo la tabla: al usarlos la vista vuelve al inicio de la tabla. Filtrar o «volver a la primera página» no lo hacen.
+  const paginarDesdeControles = (pagina: number) => {
+    cambiarPagina(pagina)
+    volverAlInicioDeLaTabla(inicioTabla.current)
+  }
+  const cambiarTamanoDesdeControles = (tamano: number) => {
+    cambiarTamano(tamano)
+    volverAlInicioDeLaTabla(inicioTabla.current)
+  }
 
   const validacion = consulta.error ? repartirValidacion(consulta.error) : undefined
   const pagina = consulta.data
@@ -77,7 +89,7 @@ export function ListadoFacturas() {
         </div>
       ) : null}
       {/* Región en vivo siempre presente: anuncia la carga y se vacía al terminar (también al cambiar de página) */}
-      <output className={formato.estado}>{consulta.isFetching ? 'Cargando facturas…' : ''}</output>
+      <output ref={inicioTabla} className={formato.estado}>{consulta.isFetching ? 'Cargando facturas…' : ''}</output>
       {facturas.length > 0 && <TablaFacturas facturas={facturas} />}
       {vacio && <EstadoVacio tipo={vacio} onQuitarFiltros={quitar} onPrimeraPagina={() => cambiarPagina(0)} />}
       {pagina && facturas.length > 0 && (
@@ -86,8 +98,8 @@ export function ListadoFacturas() {
           totalPaginas={pagina.totalPages ?? 1}
           totalFacturas={pagina.totalElements ?? facturas.length}
           tamano={parametros.size}
-          onPagina={cambiarPagina}
-          onTamano={cambiarTamano}
+          onPagina={paginarDesdeControles}
+          onTamano={cambiarTamanoDesdeControles}
         />
       )}
       {consulta.error && !validacion && <MensajeError error={consulta.error} onReintentar={() => void consulta.refetch()} />}
